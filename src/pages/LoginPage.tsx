@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Mail, Lock, LogIn, Github } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { authService } from '../services/authService';
 
 export const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -19,31 +20,27 @@ export const LoginPage: React.FC = () => {
       // OR we can wrap the logic in a function
     };
 
-    const performLogin = (loginEmail: string) => {
+    const performLogin = async (loginEmail: string, loginPassword = 'password') => {
       setIsLoading(true);
-      setTimeout(() => {
-        const mockUser = {
-          id: '1',
-          name: loginEmail.split('@')[0].charAt(0).toUpperCase() + loginEmail.split('@')[0].slice(1),
-          email: loginEmail,
-          role: loginEmail.includes('admin') ? 'ADMIN' as const : loginEmail.includes('tech') ? 'TECHNICIAN' as const : 'USER' as const
-        };
-        login('mock-jwt-token', mockUser);
+      setError('');
+      try {
+        const data = await authService.login({ email: loginEmail, password: loginPassword });
+        login(data.token, data.user);
         navigate('/');
+      } catch (err: any) {
+        setError(err.response?.data?.error || 'Login failed. Please check your credentials.');
+      } finally {
         setIsLoading(false);
-      }, 800);
+      }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
-      setError('');
-      
       if (!email || !password) {
         setError('Please fill in all fields');
         return;
       }
-
-      performLogin(email);
+      performLogin(email, password);
     };
 
   return (

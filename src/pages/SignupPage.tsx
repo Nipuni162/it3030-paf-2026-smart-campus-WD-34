@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Mail, Lock, User, UserPlus, ArrowRight } from 'lucide-react';
+import { Mail, Lock, User, UserPlus, ArrowRight, ShieldCheck } from 'lucide-react';
+import { authService } from '../services/authService';
 
 export const SignupPage: React.FC = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    role: 'USER'
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -23,6 +25,7 @@ export const SignupPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
     const validationError = validate();
     if (validationError) {
       setError(validationError);
@@ -31,13 +34,16 @@ export const SignupPage: React.FC = () => {
 
     setIsLoading(true);
     try {
-      // Mock signup
-      setTimeout(() => {
-        navigate('/login');
-        setIsLoading(false);
-      }, 1000);
-    } catch (err) {
-      setError('Signup failed. Try again.');
+      await authService.register({
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        role: formData.role
+      });
+      navigate('/login');
+    } catch (err: any) {
+      setError(err.response?.data?.error || 'Signup failed. Please try again.');
+    } finally {
       setIsLoading(false);
     }
   };
@@ -100,6 +106,22 @@ export const SignupPage: React.FC = () => {
                 className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all outline-none text-sm"
                 placeholder="••••••••"
               />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2 ml-1">Account Type</label>
+            <div className="relative">
+              <ShieldCheck className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+              <select
+                value={formData.role}
+                onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all outline-none text-sm appearance-none"
+              >
+                <option value="USER">Student / Staff</option>
+                <option value="TECHNICIAN">Technician</option>
+                <option value="ADMIN">Administrator</option>
+              </select>
             </div>
           </div>
 
