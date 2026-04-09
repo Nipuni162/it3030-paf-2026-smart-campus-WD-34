@@ -18,6 +18,7 @@ import { BookingManagementPage } from './pages/admin/BookingManagementPage';
 import { MyTicketsPage } from './pages/tickets/MyTicketsPage';
 import { TechnicianTicketDetailsPage } from './pages/tickets/TechnicianTicketDetailsPage';
 import { NotificationsPage } from './pages/NotificationsPage';
+import { MyBookingsPage } from './pages/bookings/MyBookingsPage';
 import { UnauthorizedPage } from './pages/UnauthorizedPage';
 
 export default function App() {
@@ -40,6 +41,7 @@ export default function App() {
             }>
               <Route index element={<Dashboard />} />
               <Route path="bookings" element={<BookingPage />} />
+              <Route path="my-bookings" element={<MyBookingsPage />} />
               
               {/* Ticketing Module */}
               <Route path="tickets">

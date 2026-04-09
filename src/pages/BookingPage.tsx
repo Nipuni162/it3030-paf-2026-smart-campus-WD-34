@@ -67,8 +67,6 @@ export const BookingPage: React.FC = () => {
       userId: user.id,
       userName: user.name,
       userRole: user.role as any,
-      date: formData.get('date') as string,
-      timeSlot: `${formData.get('startTime')} - ${formData.get('endTime')}`,
       purpose: formData.get('purpose') as string,
       attendees: parseInt(formData.get('attendees') as string) || 1,
     };
@@ -258,37 +256,11 @@ export const BookingPage: React.FC = () => {
                 </div>
 
                 <form className="space-y-8" onSubmit={handleBookingSubmit}>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div className="space-y-3">
-                      <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-ink/30 ml-1">Date</label>
-                      <div className="relative">
-                        <CalendarIcon className="absolute left-5 top-1/2 -translate-y-1/2 text-ink/20" size={18} />
-                        <input name="date" type="date" required className="w-full pl-14 pr-6 py-4 bg-paper border border-transparent rounded-2xl text-sm font-bold outline-none focus:border-accent transition-all" />
-                      </div>
-                    </div>
-                    <div className="space-y-3">
-                      <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-ink/30 ml-1">Attendees</label>
-                      <div className="relative">
-                        <Users className="absolute left-5 top-1/2 -translate-y-1/2 text-ink/20" size={18} />
-                        <input name="attendees" type="number" required min="1" max={selectedResource?.capacity} className="w-full pl-14 pr-6 py-4 bg-paper border border-transparent rounded-2xl text-sm font-bold outline-none focus:border-accent transition-all" />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div className="space-y-3">
-                      <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-ink/30 ml-1">Start Time</label>
-                      <div className="relative">
-                        <Clock className="absolute left-5 top-1/2 -translate-y-1/2 text-ink/20" size={18} />
-                        <input name="startTime" type="time" required className="w-full pl-14 pr-6 py-4 bg-paper border border-transparent rounded-2xl text-sm font-bold outline-none focus:border-accent transition-all" />
-                      </div>
-                    </div>
-                    <div className="space-y-3">
-                      <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-ink/30 ml-1">End Time</label>
-                      <div className="relative">
-                        <Clock className="absolute left-5 top-1/2 -translate-y-1/2 text-ink/20" size={18} />
-                        <input name="endTime" type="time" required className="w-full pl-14 pr-6 py-4 bg-paper border border-transparent rounded-2xl text-sm font-bold outline-none focus:border-accent transition-all" />
-                      </div>
+                  <div className="space-y-3">
+                    <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-ink/30 ml-1">Attendees</label>
+                    <div className="relative">
+                      <Users className="absolute left-5 top-1/2 -translate-y-1/2 text-ink/20" size={18} />
+                      <input name="attendees" type="number" required min="1" max={selectedResource?.capacity} className="w-full pl-14 pr-6 py-4 bg-paper border border-transparent rounded-2xl text-sm font-bold outline-none focus:border-accent transition-all" />
                     </div>
                   </div>
 

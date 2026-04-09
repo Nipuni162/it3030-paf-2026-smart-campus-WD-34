@@ -3,7 +3,6 @@ package com.campus.hub.service;
 import com.campus.hub.model.Ticket;
 import com.campus.hub.model.Notification;
 import com.campus.hub.repository.TicketRepository;
-import com.campus.hub.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;

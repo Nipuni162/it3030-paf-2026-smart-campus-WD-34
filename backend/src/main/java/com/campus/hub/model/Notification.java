@@ -8,21 +8,28 @@ import java.time.LocalDateTime;
 public class Notification {
     @Id
     private String id;
+    private String userId; // Null for system-wide, or target user ID
     private String message;
-    private String type; // INFO | WARNING | SUCCESS
+    private String type; // INFO | WARNING | SUCCESS | ERROR
     private LocalDateTime timestamp;
 
-    public Notification() {}
+    public Notification() {
+        this.timestamp = LocalDateTime.now();
+    }
 
-    public Notification(String id, String message, String type, LocalDateTime timestamp) {
+    public Notification(String id, String userId, String message, String type) {
         this.id = id;
+        this.userId = userId;
         this.message = message;
         this.type = type;
-        this.timestamp = timestamp;
+        this.timestamp = LocalDateTime.now();
     }
 
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
+
+    public String getUserId() { return userId; }
+    public void setUserId(String userId) { this.userId = userId; }
 
     public String getMessage() { return message; }
     public void setMessage(String message) { this.message = message; }

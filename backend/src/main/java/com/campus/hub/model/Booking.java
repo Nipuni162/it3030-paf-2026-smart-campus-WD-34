@@ -13,7 +13,9 @@ public class Booking {
     private String userId;
     private String userName;
     private String userRole;
+    @org.springframework.data.mongodb.core.mapping.Field("date")
     private String date;
+    @org.springframework.data.mongodb.core.mapping.Field("timeSlot")
     private String timeSlot;
     private String purpose;
     private int attendees;

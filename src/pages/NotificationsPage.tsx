@@ -14,21 +14,23 @@ import {
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { notificationService, Notification, NotificationType } from '../services/notificationService';
+import { useAuth } from '../context/AuthContext';
 
 export const NotificationsPage: React.FC = () => {
+  const { user } = useAuth();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [filter, setFilter] = useState<'ALL' | 'UNREAD'>('ALL');
 
   useEffect(() => {
     const fetchNotifications = async () => {
+      if (!user) return;
       setIsLoading(true);
-      const data = await notificationService.getNotifications();
+      const data = await notificationService.getNotifications(user.id);
       setNotifications(data);
       setIsLoading(false);
     };
     fetchNotifications();
-  }, []);
+  }, [user]);
 
   const handleMarkAsRead = async (id: string) => {
     await notificationService.markAsRead(id);
@@ -45,16 +47,13 @@ export const NotificationsPage: React.FC = () => {
     setNotifications(prev => prev.filter(n => n.id !== id));
   };
 
-  const filteredNotifications = notifications.filter(n => {
-    if (filter === 'UNREAD') return !n.isRead;
-    return true;
-  });
+  const filteredNotifications = notifications;
 
   const getIcon = (type: NotificationType) => {
     switch (type) {
-      case 'BOOKING': return <Calendar size={18} />;
-      case 'TICKET': return <Ticket size={18} />;
-      case 'SYSTEM': return <Settings size={18} />;
+      case 'SUCCESS': return <CheckCircle2 size={18} />;
+      case 'WARNING': return <Clock size={18} />;
+      case 'ERROR': return <AlertCircle size={18} />;
       default: return <Bell size={18} />;
     }
   };
@@ -85,23 +84,7 @@ export const NotificationsPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="flex items-center gap-4">
-        {['ALL', 'UNREAD'].map((f) => (
-          <button
-            key={f}
-            onClick={() => setFilter(f as any)}
-            className={cn(
-              "px-6 py-3 rounded-2xl text-[11px] font-bold uppercase tracking-[0.2em] transition-all duration-300 border",
-              filter === f 
-                ? "bg-accent text-white border-accent shadow-xl shadow-accent/20" 
-                : "bg-white text-ink/40 border-black/5 hover:border-ink/20 hover:text-ink"
-            )}
-          >
-            {f}
-          </button>
-        ))}
-      </div>
+      <div className="h-px w-full bg-black/5" />
 
       {/* Notifications List */}
       <div className="bg-white rounded-[3rem] border border-black/5 overflow-hidden card-shadow">
@@ -126,9 +109,10 @@ export const NotificationsPage: React.FC = () => {
                 )}
                 
                 <div className={cn(
-                  "w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 transition-all duration-500 group-hover:scale-110",
-                  notification.type === 'BOOKING' ? "bg-blue-50 text-blue-600" : 
-                  notification.type === 'TICKET' ? "bg-orange-50 text-orange-600" : "bg-purple-50 text-purple-600"
+                  "w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 transition-all duration-500 group-hover:scale-110 shadow-lg shadow-black/5",
+                  notification.type === 'SUCCESS' ? "bg-green-50 text-green-600" : 
+                  notification.type === 'WARNING' ? "bg-orange-50 text-orange-600" : 
+                  notification.type === 'ERROR' ? "bg-red-50 text-red-600" : "bg-blue-50 text-blue-600"
                 )}>
                   {getIcon(notification.type)}
                 </div>
@@ -136,36 +120,21 @@ export const NotificationsPage: React.FC = () => {
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-3">
-                      <h3 className={cn(
-                        "text-lg font-bold tracking-tight transition-colors",
-                        !notification.isRead ? "text-ink" : "text-ink/60"
-                      )}>
-                        {notification.title}
+                      <h3 className="text-lg font-bold tracking-tight text-ink">
+                        {notification.type} Notification
                       </h3>
-                      <div className={cn("w-1.5 h-1.5 rounded-full", getPriorityColor(notification.priority))} />
                     </div>
                     <span className="text-[10px] font-bold uppercase tracking-widest text-ink/20">
-                      {new Date(notification.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      {new Date(notification.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </span>
                   </div>
-                  <p className={cn(
-                    "text-sm leading-relaxed mb-4",
-                    !notification.isRead ? "text-ink/60" : "text-ink/30"
-                  )}>
+                  <p className="text-sm leading-relaxed mb-4 text-ink/60">
                     {notification.message}
                   </p>
                   <div className="flex items-center gap-6">
                     <span className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-ink/20">
-                      <Clock size={12} /> {new Date(notification.createdAt).toLocaleDateString()}
+                      <Clock size={12} /> {new Date(notification.timestamp).toLocaleDateString()}
                     </span>
-                    {!notification.isRead && (
-                      <button 
-                        onClick={() => handleMarkAsRead(notification.id)}
-                        className="text-[10px] font-bold uppercase tracking-widest text-accent hover:underline underline-offset-4"
-                      >
-                        Mark as read
-                      </button>
-                    )}
                   </div>
                 </div>
 

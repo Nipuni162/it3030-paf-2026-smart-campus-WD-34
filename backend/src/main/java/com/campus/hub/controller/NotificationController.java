@@ -15,8 +15,8 @@ public class NotificationController {
     private NotificationService notificationService;
 
     @GetMapping
-    public List<Notification> getAllNotifications() {
-        return notificationService.getAllNotifications();
+    public List<Notification> getNotifications(@RequestParam(required = false) String userId) {
+        return notificationService.getNotificationsByUserId(userId);
     }
 
     @PostMapping

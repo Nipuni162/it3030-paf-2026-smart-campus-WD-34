@@ -1,6 +1,7 @@
 package com.campus.hub.service;
 
 import com.campus.hub.model.Booking;
+import com.campus.hub.model.Notification;
 import com.campus.hub.repository.BookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,9 @@ public class BookingService {
 
     @Autowired
     private BookingRepository bookingRepository;
+
+    @Autowired
+    private NotificationService notificationService;
 
     public List<Booking> getAllBookings() {
         return bookingRepository.findAll();
@@ -43,6 +47,14 @@ public class BookingService {
         Booking booking = bookingRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Booking not found"));
         booking.setStatus(status);
+        
+        // Create notification for user
+        Notification notification = new Notification();
+        notification.setUserId(booking.getUserId());
+        notification.setMessage("Your booking for " + booking.getResourceName() + " has been " + status.toLowerCase());
+        notification.setType(status.equals("APPROVED") ? "SUCCESS" : "WARNING");
+        notificationService.createNotification(notification);
+
         return bookingRepository.save(booking);
     }
 

@@ -1,79 +1,54 @@
-export type NotificationType = 'BOOKING' | 'TICKET' | 'SYSTEM';
-export type NotificationPriority = 'LOW' | 'MEDIUM' | 'HIGH';
+import api from './api';
+
+export type NotificationType = 'INFO' | 'WARNING' | 'SUCCESS' | 'ERROR';
 
 export interface Notification {
   id: string;
-  title: string;
+  userId?: string;
   message: string;
   type: NotificationType;
-  priority: NotificationPriority;
-  isRead: boolean;
-  createdAt: string;
+  timestamp: string;
 }
 
+const USE_MOCK = false;
+
+// Mock data for fallback or initial development
 const MOCK_NOTIFICATIONS: Notification[] = [
   {
     id: 'N-1',
-    title: 'Booking Approved',
     message: 'Your request for Auditorium A has been approved for tomorrow.',
-    type: 'BOOKING',
-    priority: 'MEDIUM',
-    isRead: false,
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(), // 2 hours ago
+    type: 'SUCCESS',
+    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
   },
   {
     id: 'N-2',
-    title: 'New Ticket Update',
     message: 'Technician assigned to your IT support ticket #442.',
-    type: 'TICKET',
-    priority: 'LOW',
-    isRead: true,
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString(), // 5 hours ago
-  },
-  {
-    id: 'N-3',
-    title: 'Facility Maintenance',
-    message: 'Block 3 Labs will be closed for maintenance on Saturday.',
-    type: 'SYSTEM',
-    priority: 'HIGH',
-    isRead: false,
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(), // Yesterday
-  },
-  {
-    id: 'N-4',
-    title: 'Ticket Resolved',
-    message: 'Your ticket regarding the projector in Lab 302 has been marked as resolved.',
-    type: 'TICKET',
-    priority: 'MEDIUM',
-    isRead: true,
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 48).toISOString(), // 2 days ago
+    type: 'INFO',
+    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString(),
   }
 ];
 
 export const notificationService = {
-  getNotifications: async (): Promise<Notification[]> => {
-    await new Promise(resolve => setTimeout(resolve, 500));
-    return [...MOCK_NOTIFICATIONS].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  getNotifications: async (userId?: string): Promise<Notification[]> => {
+    if (USE_MOCK) {
+        await new Promise(resolve => setTimeout(resolve, 500));
+        return MOCK_NOTIFICATIONS;
+    }
+    const url = userId ? `/notifications?userId=${userId}` : '/notifications';
+    const response = await api.get<Notification[]>(url);
+    return response.data;
   },
 
   markAsRead: async (id: string): Promise<void> => {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    const notification = MOCK_NOTIFICATIONS.find(n => n.id === id);
-    if (notification) {
-      notification.isRead = true;
-    }
+    // Currently the backend doesn't support markAsRead, but we can implement it later if needed
+    // For now, we'll just simulate it or do nothing
   },
 
   markAllAsRead: async (): Promise<void> => {
-    await new Promise(resolve => setTimeout(resolve, 500));
-    MOCK_NOTIFICATIONS.forEach(n => n.isRead = true);
   },
 
   deleteNotification: async (id: string): Promise<void> => {
-    await new Promise(resolve => setTimeout(resolve, 300));
-    const index = MOCK_NOTIFICATIONS.findIndex(n => n.id === id);
-    if (index !== -1) {
-      MOCK_NOTIFICATIONS.splice(index, 1);
-    }
+    if (USE_MOCK) return;
+    await api.delete(`/notifications/${id}`);
   }
 };

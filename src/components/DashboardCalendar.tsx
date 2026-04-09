@@ -76,7 +76,7 @@ export const DashboardCalendar: React.FC<DashboardCalendarProps> = ({ bookings }
       <div className="grid grid-cols-7 gap-1">
         {calendarDays.map((day) => {
           const dayBookings = bookings.filter(b => 
-            b.status === 'APPROVED' && isSameDay(parseISO(b.date), day)
+            b.status === 'APPROVED' && b.date && isSameDay(parseISO(b.date), day)
           );
           
           const isCurrentMonth = isSameMonth(day, monthStart);
@@ -104,7 +104,7 @@ export const DashboardCalendar: React.FC<DashboardCalendarProps> = ({ bookings }
                     key={idx} 
                     className={cn(
                       "w-1 h-1 rounded-full",
-                      b.resourceName.toLowerCase().includes('lab') ? "bg-blue-500" : "bg-orange-500"
+                      (b.resourceName || '').toLowerCase().includes('lab') ? "bg-blue-500" : "bg-orange-500"
                     )} 
                     title={b.resourceName}
                   />
@@ -123,7 +123,7 @@ export const DashboardCalendar: React.FC<DashboardCalendarProps> = ({ bookings }
                       <div key={idx} className="flex items-center gap-2">
                         <div className={cn(
                           "w-1.5 h-1.5 rounded-full",
-                          b.resourceName.toLowerCase().includes('lab') ? "bg-blue-500" : "bg-orange-500"
+                          (b.resourceName || '').toLowerCase().includes('lab') ? "bg-blue-500" : "bg-orange-500"
                         )} />
                         <span className="font-bold truncate">{b.resourceName}</span>
                       </div>

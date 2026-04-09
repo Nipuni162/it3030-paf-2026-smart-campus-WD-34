@@ -17,8 +17,17 @@ public class NotificationService {
         return notificationRepository.findAll();
     }
 
+    public List<Notification> getNotificationsByUserId(String userId) {
+        if (userId == null || userId.isEmpty()) {
+            return notificationRepository.findByUserIdIsNullOrderByTimestampDesc();
+        }
+        return notificationRepository.findByUserIdOrderByTimestampDesc(userId);
+    }
+
     public Notification createNotification(Notification notification) {
-        notification.setTimestamp(LocalDateTime.now());
+        if (notification.getTimestamp() == null) {
+            notification.setTimestamp(LocalDateTime.now());
+        }
         return notificationRepository.save(notification);
     }
 }

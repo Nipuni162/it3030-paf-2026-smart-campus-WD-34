@@ -16,6 +16,7 @@ export interface Booking {
   purpose: string;
   attendees: number;
   rejectionReason?: string;
+  createdAt: string;
 }
 
 const USE_MOCK = false;

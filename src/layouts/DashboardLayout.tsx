@@ -38,6 +38,7 @@ export const DashboardLayout: React.FC = () => {
     ] : []),
     ...(user?.role !== 'TECHNICIAN' ? [
       { icon: <Calendar size={18} />, label: 'Bookings', path: '/bookings' },
+      { icon: <Calendar size={18} />, label: 'My Bookings', path: '/my-bookings' },
       { icon: <Ticket size={18} />, label: 'Tickets', path: '/tickets' }
     ] : []),
     ...(user?.role === 'ADMIN' ? [
