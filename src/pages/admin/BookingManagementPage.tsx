@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { bookingService, Booking, BookingStatus } from '../../services/bookingService';
+import { userService } from '../../services/userService';
 
 export const BookingManagementPage: React.FC = () => {
   const [bookings, setBookings] = useState<Booking[]>([]);
@@ -25,13 +26,36 @@ export const BookingManagementPage: React.FC = () => {
   const [rejectionReason, setRejectionReason] = useState('');
 
   useEffect(() => {
-    const fetchBookings = async () => {
+    const fetchData = async () => {
       setIsLoading(true);
-      const data = await bookingService.getBookings();
-      setBookings(data);
+      try {
+        const [bookingsData, resourcesData, usersData] = await Promise.all([
+          bookingService.getBookings(),
+          bookingService.getResources(),
+          userService.getAllUsers()
+        ]);
+        
+        // Map missing names and roles for legacy bookings
+        const enrichedBookings = bookingsData.map(b => {
+          const res = resourcesData.find(r => r.id === b.resourceId);
+          const usr = usersData.find(u => u.id === b.userId);
+          
+          return { 
+            ...b, 
+            resourceName: b.resourceName || res?.name || b.resourceId,
+            resourceType: (b as any).resourceType || res?.type || 'FACILITY',
+            userName: b.userName || usr?.name || b.userId,
+            userRole: b.userRole || usr?.role || 'STUDENT'
+          } as Booking;
+        });
+
+        setBookings(enrichedBookings);
+      } catch (error) {
+        console.error('Failed to fetch data:', error);
+      }
       setIsLoading(false);
     };
-    fetchBookings();
+    fetchData();
   }, []);
 
   const handleApprove = async (id: string) => {
@@ -50,9 +74,9 @@ export const BookingManagementPage: React.FC = () => {
 
   const filteredBookings = bookings.filter(b => {
     const matchesFilter = filter === 'ALL' || b.status === filter;
-    const matchesSearch = b.resourceName.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          b.userName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          b.id.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = (b.resourceName || '').toLowerCase().includes(searchQuery.toLowerCase()) || 
+                          (b.userName || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          (b.id || '').toLowerCase().includes(searchQuery.toLowerCase());
     return matchesFilter && matchesSearch;
   });
 
@@ -132,27 +156,27 @@ export const BookingManagementPage: React.FC = () => {
                   <div className="space-y-1">
                     <div className="flex items-center gap-2 text-ink/60">
                       <Calendar size={14} className="text-accent" />
-                      <span className="text-sm font-bold">{booking.resourceName}</span>
+                      <span className="text-sm font-bold">{booking.resourceName || booking.resourceId}</span>
                     </div>
-                    <p className="text-[9px] font-bold uppercase tracking-widest text-ink/30 pl-5">{booking.resourceType?.replace('_', ' ')}</p>
+                    <p className="text-[9px] font-bold uppercase tracking-widest text-ink/30 pl-5">{(booking as any).resourceType?.replace('_', ' ') || 'FACILITY'}</p>
                   </div>
                 </td>
                 <td className="px-8 py-6">
                   <div className="space-y-1">
                     <div className="flex items-center gap-2 text-ink/60">
                       <User size={14} />
-                      <span className="text-sm font-medium">{booking.userName}</span>
+                      <span className="text-sm font-medium">{booking.userName || booking.userId}</span>
                     </div>
-                    <p className="text-[9px] font-bold uppercase tracking-widest text-ink/30 pl-5">{booking.userRole}</p>
+                    <p className="text-[9px] font-bold uppercase tracking-widest text-ink/30 pl-5">{booking.userRole || 'STUDENT'}</p>
                   </div>
                 </td>
                 <td className="px-8 py-6">
                   <div className="space-y-1">
                     <div className="flex items-center gap-2 text-ink/60">
                       <Clock size={14} />
-                      <span className="text-xs font-bold">{booking.date}</span>
+                      <span className="text-xs font-bold">{booking.date || 'Date Pending'}</span>
                     </div>
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-ink/30 pl-5">{booking.timeSlot}</p>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-ink/30 pl-5">{booking.timeSlot || 'Time Pending'}</p>
                   </div>
                 </td>
                 <td className="px-8 py-6">

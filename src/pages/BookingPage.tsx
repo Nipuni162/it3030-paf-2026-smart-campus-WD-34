@@ -70,6 +70,7 @@ export const BookingPage: React.FC = () => {
       date: formData.get('date') as string,
       timeSlot: `${formData.get('startTime')} - ${formData.get('endTime')}`,
       purpose: formData.get('purpose') as string,
+      attendees: parseInt(formData.get('attendees') as string) || 1,
     };
 
     await bookingService.createBooking(bookingData);
@@ -174,11 +175,11 @@ export const BookingPage: React.FC = () => {
               <div className="absolute top-0 right-0 p-8">
                 <span className={cn(
                   "px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] border",
-                  res.status === 'AVAILABLE' ? "bg-green-50 text-green-700 border-green-100" : 
+                  res.status === 'ACTIVE' || res.status === 'AVAILABLE' ? "bg-green-50 text-green-700 border-green-100" : 
                   res.status === 'MAINTENANCE' ? "bg-orange-50 text-orange-700 border-orange-100" : 
                   "bg-red-50 text-red-700 border-red-100"
                 )}>
-                  {res.status}
+                  {res.status === 'ACTIVE' ? 'AVAILABLE' : res.status === 'OUT_OF_SERVICE' ? 'UNAVAILABLE' : res.status}
                 </span>
               </div>
 
@@ -207,7 +208,7 @@ export const BookingPage: React.FC = () => {
               </div>
 
               <button
-                disabled={res.status !== 'AVAILABLE'}
+                disabled={res.status !== 'ACTIVE' && res.status !== 'AVAILABLE'}
                 onClick={() => {
                   setSelectedResource(res);
                   setShowForm(true);

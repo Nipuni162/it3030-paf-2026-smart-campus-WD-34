@@ -26,9 +26,9 @@ public class BookingService {
     }
 
     public Booking createBooking(Booking booking) {
-        // Conflict check: (ExistingStart < NewEnd) AND (ExistingEnd > NewStart)
-        boolean hasConflict = bookingRepository.existsByResourceIdAndStatusAndStartTimeBeforeAndEndTimeAfter(
-            booking.getResourceId(), "APPROVED", booking.getEndTime(), booking.getStartTime()
+        // Simple conflict check
+        boolean hasConflict = bookingRepository.existsByResourceIdAndStatusAndDateAndTimeSlot(
+            booking.getResourceId(), "APPROVED", booking.getDate(), booking.getTimeSlot()
         );
 
         if (hasConflict) {
