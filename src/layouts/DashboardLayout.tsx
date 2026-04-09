@@ -12,7 +12,8 @@ import {
   User,
   Settings,
   Sun,
-  Moon
+  Moon,
+  Megaphone
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
@@ -43,7 +44,8 @@ export const DashboardLayout: React.FC = () => {
     ] : []),
     ...(user?.role === 'ADMIN' ? [
       { icon: <Settings size={18} />, label: 'Resources', path: '/admin/resources' },
-      { icon: <Calendar size={18} />, label: 'Manage Bookings', path: '/admin/bookings' }
+      { icon: <Calendar size={18} />, label: 'Manage Bookings', path: '/admin/bookings' },
+      { icon: <Megaphone size={18} />, label: 'Publish Notice', path: '/admin/notices' }
     ] : []),
     { icon: <Bell size={18} />, label: 'Notifications', path: '/notifications' },
   ];

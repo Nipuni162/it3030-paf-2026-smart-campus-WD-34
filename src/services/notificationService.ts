@@ -50,5 +50,21 @@ export const notificationService = {
   deleteNotification: async (id: string): Promise<void> => {
     if (USE_MOCK) return;
     await api.delete(`/notifications/${id}`);
+  },
+
+  createNotification: async (notification: Partial<Notification>): Promise<Notification> => {
+    if (USE_MOCK) {
+      const newNotification: Notification = {
+        id: `N-${Math.random().toString(36).substr(2, 9)}`,
+        message: notification.message || '',
+        type: notification.type || 'INFO',
+        timestamp: new Date().toISOString(),
+        ...notification
+      };
+      MOCK_NOTIFICATIONS.unshift(newNotification);
+      return newNotification;
+    }
+    const response = await api.post<Notification>('/notifications', notification);
+    return response.data;
   }
 };

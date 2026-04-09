@@ -21,7 +21,7 @@ public class NotificationService {
         if (userId == null || userId.isEmpty()) {
             return notificationRepository.findByUserIdIsNullOrderByTimestampDesc();
         }
-        return notificationRepository.findByUserIdOrderByTimestampDesc(userId);
+        return notificationRepository.findByUserIdOrUserIdIsNullOrderByTimestampDesc(userId);
     }
 
     public Notification createNotification(Notification notification) {

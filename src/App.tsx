@@ -20,6 +20,7 @@ import { TechnicianTicketDetailsPage } from './pages/tickets/TechnicianTicketDet
 import { NotificationsPage } from './pages/NotificationsPage';
 import { MyBookingsPage } from './pages/bookings/MyBookingsPage';
 import { UnauthorizedPage } from './pages/UnauthorizedPage';
+import { AdminNoticePage } from './pages/admin/AdminNoticePage';
 
 export default function App() {
   return (
@@ -64,6 +65,11 @@ export default function App() {
               <Route path="admin/bookings" element={
                 <ProtectedRoute allowedRoles={['ADMIN']}>
                   <BookingManagementPage />
+                </ProtectedRoute>
+              } />
+              <Route path="admin/notices" element={
+                <ProtectedRoute allowedRoles={['ADMIN']}>
+                  <AdminNoticePage />
                 </ProtectedRoute>
               } />
               
