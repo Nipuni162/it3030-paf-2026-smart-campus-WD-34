@@ -5,10 +5,13 @@
 /Users/sonaldamsith/Documents/GitHub/PAF/backend/src/main/java/com/campus/hub/controller/NotificationController.java
 /Users/sonaldamsith/Documents/GitHub/PAF/backend/src/main/java/com/campus/hub/controller/ResourceController.java
 /Users/sonaldamsith/Documents/GitHub/PAF/backend/src/main/java/com/campus/hub/controller/TicketController.java
+/Users/sonaldamsith/Documents/GitHub/PAF/backend/src/main/java/com/campus/hub/controller/UserController.java
 /Users/sonaldamsith/Documents/GitHub/PAF/backend/src/main/java/com/campus/hub/model/Booking.java
 /Users/sonaldamsith/Documents/GitHub/PAF/backend/src/main/java/com/campus/hub/model/Notification.java
 /Users/sonaldamsith/Documents/GitHub/PAF/backend/src/main/java/com/campus/hub/model/Resource.java
 /Users/sonaldamsith/Documents/GitHub/PAF/backend/src/main/java/com/campus/hub/model/Ticket.java
+/Users/sonaldamsith/Documents/GitHub/PAF/backend/src/main/java/com/campus/hub/model/TicketAttachment.java
+/Users/sonaldamsith/Documents/GitHub/PAF/backend/src/main/java/com/campus/hub/model/TicketComment.java
 /Users/sonaldamsith/Documents/GitHub/PAF/backend/src/main/java/com/campus/hub/model/User.java
 /Users/sonaldamsith/Documents/GitHub/PAF/backend/src/main/java/com/campus/hub/repository/BookingRepository.java
 /Users/sonaldamsith/Documents/GitHub/PAF/backend/src/main/java/com/campus/hub/repository/NotificationRepository.java
@@ -20,3 +23,4 @@
 /Users/sonaldamsith/Documents/GitHub/PAF/backend/src/main/java/com/campus/hub/service/NotificationService.java
 /Users/sonaldamsith/Documents/GitHub/PAF/backend/src/main/java/com/campus/hub/service/ResourceService.java
 /Users/sonaldamsith/Documents/GitHub/PAF/backend/src/main/java/com/campus/hub/service/TicketService.java
+/Users/sonaldamsith/Documents/GitHub/PAF/backend/src/main/java/com/campus/hub/service/UserService.java

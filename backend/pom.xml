@@ -48,6 +48,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
+					<jvmArguments>-Djdk.tls.client.protocols=TLSv1.2 -Dcom.sun.net.ssl.checkRevocation=false</jvmArguments>
 				</configuration>
 			</plugin>
 		</plugins>

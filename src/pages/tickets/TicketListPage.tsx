@@ -38,8 +38,8 @@ export const TicketListPage: React.FC = () => {
 
   const filteredTickets = tickets.filter(t => {
     const matchesFilter = filter === 'ALL' || t.status === filter;
-    const matchesSearch = t.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          t.id.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = (t.title || '').toLowerCase().includes(searchQuery.toLowerCase()) || 
+                          (t.id || '').toLowerCase().includes(searchQuery.toLowerCase());
     const matchesMine = !showOnlyMine || t.createdBy === user?.id;
     return matchesFilter && matchesSearch && matchesMine;
   });

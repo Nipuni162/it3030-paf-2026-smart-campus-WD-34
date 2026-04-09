@@ -24,9 +24,10 @@ export const TechnicianDashboard: React.FC = () => {
 
   useEffect(() => {
     const fetchTickets = async () => {
+      if (!user?.id) return;
       setIsLoading(true);
       try {
-        const data = await technicianService.getAssignedTickets();
+        const data = await technicianService.getAssignedTickets(user.id);
         setTickets(data);
       } catch (error) {
         console.error('Failed to fetch assigned tickets:', error);

@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { ticketService } from '../../services/ticketService';
+import { userService, User as Technician } from '../../services/userService';
 import { Ticket, TicketStatus } from '../../types/ticket';
 import { TicketStatusBadge } from '../../components/tickets/TicketStatusBadge';
 import { cn } from '../../lib/utils';
@@ -38,17 +39,22 @@ export const TicketDetailsPage: React.FC = () => {
   const [showResolveModal, setShowResolveModal] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [notes, setNotes] = useState('');
+  const [technicians, setTechnicians] = useState<Technician[]>([]);
 
   useEffect(() => {
-    const fetchTicket = async () => {
+    const fetchData = async () => {
       if (id) {
         setIsLoading(true);
-        const data = await ticketService.getTicketById(id);
-        if (data) setTicket(data);
+        const [ticketData, techData] = await Promise.all([
+          ticketService.getTicketById(id),
+          userService.getTechnicians()
+        ]);
+        if (ticketData) setTicket(ticketData);
+        setTechnicians(techData);
         setIsLoading(false);
       }
     };
-    fetchTicket();
+    fetchData();
   }, [id]);
 
   const handleAddComment = async (e: React.FormEvent) => {
@@ -174,11 +180,11 @@ export const TicketDetailsPage: React.FC = () => {
               <p className="text-lg leading-relaxed text-ink/80">{ticket.description}</p>
             </div>
 
-            {ticket.attachments.length > 0 && (
+            {(ticket.attachments || []).length > 0 && (
               <div className="space-y-4">
                 <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-ink/30">Attachments</h3>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
-                  {ticket.attachments.map((att) => (
+                  {(ticket.attachments || []).map((att) => (
                     <a 
                       key={att.id} 
                       href={att.url} 
@@ -218,7 +224,7 @@ export const TicketDetailsPage: React.FC = () => {
             </h2>
             
             <div className="space-y-6">
-              {ticket.comments.map((c) => (
+              {(ticket.comments || []).map((c) => (
                 <div key={c.id} className="bg-white rounded-[2rem] border border-black/5 p-8 card-shadow flex gap-6">
                   <div className="w-12 h-12 bg-paper rounded-2xl flex items-center justify-center shrink-0">
                     <User size={20} className="text-ink/20" />
@@ -340,16 +346,26 @@ export const TicketDetailsPage: React.FC = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-ink/60 backdrop-blur-sm">
           <div className="bg-white rounded-[3rem] p-12 max-w-md w-full card-shadow space-y-10">
             <h2 className="text-3xl font-bold tracking-tight">Assign Technician</h2>
-            <div className="space-y-4">
-              {['Tech Mike', 'Tech Sarah', 'Tech David'].map((name, i) => (
-                <button
-                  key={i}
-                  onClick={() => handleAssign(`tech-${i+1}`, name)}
-                  className="w-full p-6 bg-paper rounded-2xl text-left font-bold hover:bg-accent hover:text-white transition-all flex items-center justify-between group"
-                >
-                  {name} <ChevronRight size={18} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                </button>
-              ))}
+            <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+              {technicians.length > 0 ? (
+                technicians.map((tech) => (
+                  <button
+                    key={tech.id}
+                    onClick={() => handleAssign(tech.id, tech.name)}
+                    className="w-full p-6 bg-paper rounded-2xl text-left font-bold hover:bg-accent hover:text-white transition-all flex items-center justify-between group"
+                  >
+                    <div className="flex flex-col">
+                      <span>{tech.name}</span>
+                      <span className="text-[10px] font-medium opacity-60">{tech.email}</span>
+                    </div>
+                    <ChevronRight size={18} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </button>
+                ))
+              ) : (
+                <div className="p-12 text-center text-ink/20 serif-italic">
+                  No technicians available.
+                </div>
+              )}
             </div>
             <button onClick={() => setShowAssignModal(false)} className="w-full py-4 text-ink/40 font-bold uppercase tracking-widest text-[10px]">Cancel</button>
           </div>

@@ -43,20 +43,20 @@ public class TicketController {
     }
 
     @PatchMapping("/{id}/status")
-    public ResponseEntity<Ticket> updateTicketStatus(@PathVariable String id, @RequestBody Map<String, String> statusMap) {
+    public ResponseEntity<?> updateTicketStatus(@PathVariable String id, @RequestBody Map<String, String> statusMap) {
         try {
             return ResponseEntity.ok(ticketService.updateTicketStatus(id, statusMap.get("status")));
         } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", e.getMessage()));
         }
     }
 
     @PatchMapping("/{id}/assign")
-    public ResponseEntity<Ticket> assignTechnician(@PathVariable String id, @RequestBody Map<String, String> body) {
+    public ResponseEntity<?> assignTechnician(@PathVariable String id, @RequestBody Map<String, String> body) {
         try {
-            return ResponseEntity.ok(ticketService.assignTechnician(id, body.get("technicianId")));
+            return ResponseEntity.ok(ticketService.assignTechnician(id, body.get("technicianId"), body.get("technicianName")));
         } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", e.getMessage()));
         }
     }
 }

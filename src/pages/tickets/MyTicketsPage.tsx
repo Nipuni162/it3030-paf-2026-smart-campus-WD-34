@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, Filter, ChevronRight, Clock, AlertCircle, Ticket as TicketIcon } from 'lucide-react';
 import { technicianService } from '../../services/technicianService';
+import { useAuth } from '../../context/AuthContext';
 import { Ticket, TicketStatus, TicketPriority } from '../../types/ticket';
 import { TicketStatusBadge } from '../../components/tickets/TicketStatusBadge';
 import { cn } from '../../lib/utils';
 
 export const MyTicketsPage: React.FC = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState<TicketStatus | 'ALL'>('ALL');
@@ -16,9 +18,10 @@ export const MyTicketsPage: React.FC = () => {
 
   useEffect(() => {
     const fetchTickets = async () => {
+      if (!user?.id) return;
       setIsLoading(true);
       try {
-        const data = await technicianService.getAssignedTickets();
+        const data = await technicianService.getAssignedTickets(user.id);
         setTickets(data);
       } catch (error) {
         console.error('Failed to fetch assigned tickets:', error);
