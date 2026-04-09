@@ -19,6 +19,25 @@ export const technicianService = {
   },
 
   /**
+   * Get all tickets in the system
+   */
+  getAllTickets: async (): Promise<Ticket[]> => {
+    const response = await api.get<Ticket[]>('/tickets');
+    return response.data;
+  },
+
+  /**
+   * Self-assign a ticket to the logged-in technician
+   */
+  selfAssignTicket: async (id: string, techId: string, techName: string): Promise<Ticket> => {
+    const response = await api.patch<Ticket>(`/tickets/${id}/self-assign`, { 
+      technicianId: techId, 
+      technicianName: techName 
+    });
+    return response.data;
+  },
+
+  /**
    * Update the status of a ticket
    */
   updateTicketStatus: async (id: string, status: TicketStatus, resolutionNotes?: string): Promise<Ticket> => {

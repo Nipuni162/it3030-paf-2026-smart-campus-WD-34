@@ -30,6 +30,7 @@ export interface Ticket {
   createdByName: string;
   assignedTo?: string;
   assignedToName?: string;
+  assignedByAdmin?: boolean;
   createdAt: string;
   updatedAt: string;
   rejectionReason?: string;

@@ -22,6 +22,7 @@ public class Ticket {
     private String createdByName;
     private String assignedTo;
     private String assignedToName;
+    private Boolean assignedByAdmin;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private String rejectionReason;
@@ -87,4 +88,6 @@ public class Ticket {
 
     public List<TicketAttachment> getAttachments() { return attachments; }
     public void setAttachments(List<TicketAttachment> attachments) { this.attachments = attachments; }
+    public Boolean getAssignedByAdmin() { return assignedByAdmin; }
+    public void setAssignedByAdmin(Boolean assignedByAdmin) { this.assignedByAdmin = assignedByAdmin; }
 }

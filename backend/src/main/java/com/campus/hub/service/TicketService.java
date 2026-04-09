@@ -1,6 +1,7 @@
 package com.campus.hub.service;
 
 import com.campus.hub.model.Ticket;
+import com.campus.hub.model.Notification;
 import com.campus.hub.repository.TicketRepository;
 import com.campus.hub.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ public class TicketService {
     private TicketRepository ticketRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private NotificationService notificationService;
 
     public List<Ticket> getAllTickets() {
         return ticketRepository.findAll();
@@ -58,8 +59,35 @@ public class TicketService {
         System.out.println("Found ticket: " + ticket.getTitle() + ". Assigning to: " + technicianName);
         ticket.setAssignedTo(technicianId);
         ticket.setAssignedToName(technicianName);
+        ticket.setAssignedByAdmin(true);
         ticket.setStatus("IN_PROGRESS");
         ticket.setUpdatedAt(LocalDateTime.now());
         return ticketRepository.save(ticket);
+    }
+
+    public Ticket selfAssignTicket(String id, String technicianId, String technicianName) {
+        Ticket ticket = ticketRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Ticket not found"));
+        
+        if (ticket.getAssignedTo() != null) {
+            throw new RuntimeException("Ticket is already assigned");
+        }
+
+        ticket.setAssignedTo(technicianId);
+        ticket.setAssignedToName(technicianName);
+        ticket.setAssignedByAdmin(false);
+        ticket.setStatus("IN_PROGRESS");
+        ticket.setUpdatedAt(LocalDateTime.now());
+        
+        Ticket savedTicket = ticketRepository.save(ticket);
+
+        // Notify Admin
+        Notification notification = new Notification();
+        notification.setMessage("Technician " + technicianName + " has self-assigned to Ticket: " + (ticket.getTitle() != null ? ticket.getTitle() : ticket.getId()));
+        notification.setType("INFO");
+        notification.setTimestamp(LocalDateTime.now());
+        notificationService.createNotification(notification);
+
+        return savedTicket;
     }
 }

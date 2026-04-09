@@ -1,42 +1,64 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Filter, ChevronRight, Clock, AlertCircle, Ticket as TicketIcon } from 'lucide-react';
+import { Search, Filter, ChevronRight, Clock, AlertCircle, Ticket as TicketIcon, UserCheck, Inbox } from 'lucide-react';
 import { technicianService } from '../../services/technicianService';
 import { useAuth } from '../../context/AuthContext';
 import { Ticket, TicketStatus, TicketPriority } from '../../types/ticket';
 import { TicketStatusBadge } from '../../components/tickets/TicketStatusBadge';
 import { cn } from '../../lib/utils';
+import { toast } from 'sonner';
+
+type TabType = 'ASSIGNED' | 'ALL';
 
 export const MyTicketsPage: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<TabType>('ASSIGNED');
   const [statusFilter, setStatusFilter] = useState<TicketStatus | 'ALL'>('ALL');
   const [priorityFilter, setPriorityFilter] = useState<TicketPriority | 'ALL'>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
 
+  const fetchTickets = async () => {
+    if (!user?.id) return;
+    setIsLoading(true);
+    try {
+      const data = activeTab === 'ASSIGNED' 
+        ? await technicianService.getAssignedTickets(user.id)
+        : await technicianService.getAllTickets();
+      setTickets(data);
+    } catch (error) {
+      console.error('Failed to fetch tickets:', error);
+      toast.error('Failed to load tickets');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchTickets = async () => {
-      if (!user?.id) return;
-      setIsLoading(true);
-      try {
-        const data = await technicianService.getAssignedTickets(user.id);
-        setTickets(data);
-      } catch (error) {
-        console.error('Failed to fetch assigned tickets:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
     fetchTickets();
-  }, []);
+  }, [activeTab]);
+
+  const handleSelfAssign = async (ticketId: string) => {
+    if (!user?.id || !user?.name) return;
+    try {
+      await technicianService.selfAssignTicket(ticketId, user.id, user.name);
+      toast.success('Ticket assigned to you');
+      fetchTickets();
+    } catch (error: any) {
+      toast.error(error.response?.data?.error || 'Failed to self-assign ticket');
+    }
+  };
 
   const filteredTickets = tickets.filter(t => {
+    // For Assigned tab, only show what was explicitly assigned by Admin (as requested)
+    if (activeTab === 'ASSIGNED' && t.assignedByAdmin === false) return false;
+    
     const matchesStatus = statusFilter === 'ALL' || t.status === statusFilter;
     const matchesPriority = priorityFilter === 'ALL' || t.priority === priorityFilter;
-    const matchesSearch = t.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          t.id.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = (t.title || '').toLowerCase().includes(searchQuery.toLowerCase()) || 
+                          (t.id || '').toLowerCase().includes(searchQuery.toLowerCase());
     return matchesStatus && matchesPriority && matchesSearch;
   });
 
@@ -50,12 +72,42 @@ export const MyTicketsPage: React.FC = () => {
   };
 
   return (
-    <div className="p-6 md:p-12 max-w-7xl mx-auto w-full space-y-12">
+    <div className="p-6 md:p-12 max-w-7xl mx-auto w-full space-y-12 transition-all duration-700 animate-in fade-in slide-in-from-bottom-4">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
         <div>
-          <h1 className="text-5xl font-bold tracking-tight mb-2 text-ink">My Tickets</h1>
-          <p className="text-xl serif-italic text-ink/50">Manage and resolve your assigned maintenance tasks.</p>
+          <h1 className="text-5xl font-bold tracking-tight mb-2 text-ink">Technician Dashboard</h1>
+          <p className="text-xl serif-italic text-ink/50">
+            {activeTab === 'ASSIGNED' 
+              ? 'Tasks explicitly assigned to you by administrators.' 
+              : 'Public pool of all student maintenance requests.'}
+          </p>
         </div>
+      </div>
+
+      {/* Tabs */}
+      <div className="flex p-1.5 bg-paper rounded-2xl border border-black/5 w-fit">
+        <button
+          onClick={() => setActiveTab('ASSIGNED')}
+          className={cn(
+            "px-8 py-3 rounded-xl text-sm font-bold transition-all flex items-center gap-2",
+            activeTab === 'ASSIGNED' 
+              ? "bg-white text-accent shadow-sm ring-1 ring-black/5" 
+              : "text-ink/40 hover:text-ink/60"
+          )}
+        >
+          <Inbox size={18} /> Assigned Tickets
+        </button>
+        <button
+          onClick={() => setActiveTab('ALL')}
+          className={cn(
+            "px-8 py-3 rounded-xl text-sm font-bold transition-all flex items-center gap-2",
+            activeTab === 'ALL' 
+              ? "bg-white text-accent shadow-sm ring-1 ring-black/5" 
+              : "text-ink/40 hover:text-ink/60"
+          )}
+        >
+          <TicketIcon size={18} /> All Tickets
+        </button>
       </div>
 
       {/* Filters & Search */}
@@ -110,10 +162,9 @@ export const MyTicketsPage: React.FC = () => {
           {filteredTickets.map((ticket) => (
             <div 
               key={ticket.id}
-              onClick={() => navigate(`/technician/tickets/${ticket.id}`)}
-              className="bg-white rounded-[2.5rem] border border-black/5 p-8 hover:shadow-2xl hover:shadow-black/5 transition-all duration-500 group cursor-pointer flex flex-col md:flex-row md:items-center gap-8"
+              className="bg-white rounded-[2.5rem] border border-black/5 p-8 hover:shadow-2xl hover:shadow-black/5 transition-all duration-500 group flex flex-col md:flex-row md:items-center gap-8 relative overflow-hidden"
             >
-              <div className="flex-1">
+              <div className="flex-1 cursor-pointer" onClick={() => navigate(`/technician/tickets/${ticket.id}`)}>
                 <div className="flex items-center gap-4 mb-3">
                   <span className="text-[11px] font-bold uppercase tracking-widest text-accent bg-accent/5 px-3 py-1 rounded-lg">
                     {ticket.id}
@@ -133,11 +184,27 @@ export const MyTicketsPage: React.FC = () => {
                   <span className="flex items-center gap-2 font-medium text-ink/60">
                     Location: {ticket.location}
                   </span>
+                  {ticket.assignedToName && (
+                    <span className="flex items-center gap-2 text-ink/30 italic">
+                      <UserCheck size={16} /> {ticket.assignedToName}
+                    </span>
+                  )}
                 </div>
               </div>
 
-              <div className="flex items-center gap-6 shrink-0 border-t md:border-t-0 md:border-l border-black/5 pt-6 md:pt-0 md:pl-8">
-                <div className="w-12 h-12 bg-paper rounded-2xl flex items-center justify-center text-ink/20 group-hover:bg-accent group-hover:text-white transition-all duration-500">
+              <div className="flex items-center gap-4 shrink-0 border-t md:border-t-0 md:border-l border-black/5 pt-6 md:pt-0 md:pl-8">
+                {activeTab === 'ALL' && !ticket.assignedTo && (
+                  <button
+                    onClick={() => handleSelfAssign(ticket.id)}
+                    className="flex items-center gap-2 px-6 py-3 bg-accent text-white rounded-xl text-sm font-bold hover:bg-accent/90 transition-all shadow-lg shadow-accent/20 active:scale-95"
+                  >
+                    <UserCheck size={18} /> Self Assign
+                  </button>
+                )}
+                <div 
+                  onClick={() => navigate(`/technician/tickets/${ticket.id}`)}
+                  className="w-12 h-12 bg-paper rounded-2xl flex items-center justify-center text-ink/20 group-hover:bg-accent group-hover:text-white transition-all duration-500 cursor-pointer"
+                >
                   <ChevronRight size={24} />
                 </div>
               </div>
@@ -150,7 +217,7 @@ export const MyTicketsPage: React.FC = () => {
             <TicketIcon className="text-ink/10" size={40} />
           </div>
           <h3 className="text-2xl font-bold text-ink mb-2">No tickets found</h3>
-          <p className="text-ink/40 serif-italic">Try adjusting your filters or search query.</p>
+          <p className="text-ink/40 serif-italic">Try adjusting your filters or switching tabs.</p>
         </div>
       )}
     </div>
