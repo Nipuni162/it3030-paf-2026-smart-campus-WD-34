@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Mail, Lock, LogIn, Github } from 'lucide-react';
+import { Mail, Lock } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { authService } from '../services/authService';
 
@@ -11,37 +11,37 @@ export const LoginPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+  const [selectedRole, setSelectedRole] = useState<string>('USER');
 
-    const handleQuickLogin = (roleEmail: string) => {
-      setEmail(roleEmail);
-      setPassword('password');
-      // We need to wait for state updates or just call login logic directly
-      // For simplicity in this mock, we'll just set values and the user can click login
-      // OR we can wrap the logic in a function
-    };
+  const handleRoleSwitch = (role: string) => {
+    setSelectedRole(role);
+    setError('');
+    setEmail('');
+    setPassword('');
+  };
 
-    const performLogin = async (loginEmail: string, loginPassword = 'password') => {
-      setIsLoading(true);
-      setError('');
-      try {
-        const data = await authService.login({ email: loginEmail, password: loginPassword });
-        login(data.token, data.user);
-        navigate('/');
-      } catch (err: any) {
-        setError(err.response?.data?.error || 'Login failed. Please check your credentials.');
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const performLogin = async (loginEmail: string, loginPassword = 'password') => {
+    setIsLoading(true);
+    setError('');
+    try {
+      const data = await authService.login({ email: loginEmail, password: loginPassword });
+      login(data.token, data.user);
+      navigate('/');
+    } catch (err: any) {
+      setError(err.response?.data?.error || 'Login failed. Please check your credentials.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    const handleSubmit = async (e: React.FormEvent) => {
-      e.preventDefault();
-      if (!email || !password) {
-        setError('Please fill in all fields');
-        return;
-      }
-      performLogin(email, password);
-    };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || !password) {
+      setError('Please fill in all fields');
+      return;
+    }
+    performLogin(email, password);
+  };
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row bg-paper font-sans overflow-hidden">
@@ -73,8 +73,10 @@ export const LoginPage: React.FC = () => {
       <div className="lg:w-1/2 flex items-center justify-center p-8 lg:p-24 bg-paper">
         <div className="max-w-md w-full">
           <div className="mb-12">
-            <h2 className="text-4xl font-bold tracking-tight text-ink mb-3">Sign In</h2>
-            <p className="text-ink/40 font-medium">Enter your credentials to access the hub.</p>
+            <h2 className="text-4xl font-bold tracking-tight text-ink mb-3">
+              Sign In <span className="text-accent text-2xl ml-2 font-medium">/ {selectedRole}</span>
+            </h2>
+            <p className="text-ink/40 font-medium">Enter your {selectedRole.toLowerCase()} credentials to access the hub.</p>
           </div>
 
           {error && (
@@ -94,7 +96,7 @@ export const LoginPage: React.FC = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full pl-14 pr-6 py-4 bg-white border border-black/5 rounded-2xl focus:ring-4 focus:ring-accent/5 focus:border-accent transition-all outline-none text-sm font-medium"
-                  placeholder="name@university.edu"
+                  placeholder={selectedRole === 'ADMIN' ? 'admin@university.edu' : selectedRole === 'TECHNICIAN' ? 'tech@university.edu' : 'student@university.edu'}
                 />
               </div>
             </div>
@@ -137,25 +139,25 @@ export const LoginPage: React.FC = () => {
           <div className="mt-12">
             <div className="relative flex items-center justify-center mb-10">
               <div className="w-full border-t border-black/5"></div>
-              <span className="absolute px-6 bg-paper text-[10px] font-bold uppercase tracking-[0.3em] text-ink/20">Quick Access</span>
+              <span className="absolute px-6 bg-paper text-[10px] font-bold uppercase tracking-[0.3em] text-ink/20">Select Portal</span>
             </div>
 
             <div className="grid grid-cols-3 gap-4">
               <button 
-                onClick={() => performLogin('admin@university.edu')}
-                className="py-3 bg-white border border-black/5 rounded-xl text-[10px] font-bold uppercase tracking-widest text-ink/40 hover:bg-accent hover:text-white hover:border-accent transition-all duration-300"
+                onClick={() => handleRoleSwitch('ADMIN')}
+                className={`py-3 border rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all duration-300 ${selectedRole === 'ADMIN' ? 'bg-accent text-white border-accent' : 'bg-white border-black/5 text-ink/40 hover:bg-accent/5 hover:text-accent'}`}
               >
                 Admin
               </button>
               <button 
-                onClick={() => performLogin('tech@university.edu')}
-                className="py-3 bg-white border border-black/5 rounded-xl text-[10px] font-bold uppercase tracking-widest text-ink/40 hover:bg-orange-500 hover:text-white hover:border-orange-500 transition-all duration-300"
+                onClick={() => handleRoleSwitch('TECHNICIAN')}
+                className={`py-3 border rounded-xl text-[10px) font-bold uppercase tracking-widest transition-all duration-300 ${selectedRole === 'TECHNICIAN' ? 'bg-orange-500 text-white border-orange-500' : 'bg-white border-black/5 text-ink/40 hover:bg-orange-500/5 hover:text-orange-500'}`}
               >
                 Tech
               </button>
               <button 
-                onClick={() => performLogin('user@university.edu')}
-                className="py-3 bg-white border border-black/5 rounded-xl text-[10px] font-bold uppercase tracking-widest text-ink/40 hover:bg-blue-500 hover:text-white hover:border-blue-500 transition-all duration-300"
+                onClick={() => handleRoleSwitch('USER')}
+                className={`py-3 border rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all duration-300 ${selectedRole === 'USER' ? 'bg-blue-500 text-white border-blue-500' : 'bg-white border-black/5 text-ink/40 hover:bg-blue-500/5 hover:text-blue-500'}`}
               >
                 User
               </button>
@@ -176,7 +178,7 @@ export const LoginPage: React.FC = () => {
 
           <p className="mt-12 text-center text-ink/30 text-[11px] font-bold uppercase tracking-widest">
             New here?{' '}
-            <Link to="/signup" className="text-accent hover:underline underline-offset-4">Create Account</Link>
+            <Link to={`/signup?role=${selectedRole}`} className="text-accent hover:underline underline-offset-4">Create {selectedRole.toLowerCase()} Account</Link>
           </p>
         </div>
       </div>

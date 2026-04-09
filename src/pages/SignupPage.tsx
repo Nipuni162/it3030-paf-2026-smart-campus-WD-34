@@ -1,16 +1,26 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { Mail, Lock, User, UserPlus, ArrowRight, ShieldCheck } from 'lucide-react';
 import { authService } from '../services/authService';
 
 export const SignupPage: React.FC = () => {
+  const [searchParams] = useSearchParams();
+  const initialRole = searchParams.get('role') || 'USER';
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
     confirmPassword: '',
-    role: 'USER'
+    role: initialRole
   });
+
+  useEffect(() => {
+    const role = searchParams.get('role');
+    if (role) {
+      setFormData(prev => ({ ...prev, role }));
+    }
+  }, [searchParams]);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
