@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Mail, Lock } from 'lucide-react';
+import { Mail, Lock, Command, ChevronRight, Globe, Github } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 import { useAuth } from '../context/AuthContext';
 import { authService } from '../services/authService';
+import { cn } from '../lib/utils';
 
 export const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -16,8 +18,6 @@ export const LoginPage: React.FC = () => {
   const handleRoleSwitch = (role: string) => {
     setSelectedRole(role);
     setError('');
-    setEmail('');
-    setPassword('');
   };
 
   const performLogin = async (loginEmail: string, loginPassword = 'password') => {
@@ -28,7 +28,7 @@ export const LoginPage: React.FC = () => {
       login(data.token, data.user);
       navigate('/');
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Login failed. Please check your credentials.');
+      setError(err.response?.data?.error || 'Authentication failed. Please check your credentials.');
     } finally {
       setIsLoading(false);
     }
@@ -37,150 +37,188 @@ export const LoginPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
-      setError('Please fill in all fields');
+      setError('Required fields are missing.');
       return;
     }
     performLogin(email, password);
   };
 
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row bg-paper font-sans overflow-hidden">
-      {/* Editorial Hero Section */}
-      <div className="lg:w-1/2 bg-ink p-12 lg:p-24 flex flex-col justify-between relative overflow-hidden">
-        <div className="absolute -right-20 -bottom-20 w-96 h-96 bg-accent/20 rounded-full blur-[120px]" />
-        <div className="absolute left-10 top-10 w-40 h-40 bg-accent/10 rounded-full blur-[80px]" />
+    <div className="min-h-screen flex bg-paper transition-colors duration-500 mesh-gradient selection:bg-accent/20">
+      {/* Cinematic Identity Section */}
+      <div className="hidden lg:flex lg:w-[45%] bg-ink p-16 flex-col justify-between relative overflow-hidden m-4 rounded-[3rem] shadow-2xl">
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1541339907198-e08756ebafe3?auto=format&fit=crop&q=80')] bg-cover bg-center mix-blend-overlay opacity-20 scale-110" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80" />
+        <div className="absolute -right-24 -bottom-24 w-96 h-96 bg-accent/30 rounded-full blur-[120px]" />
         
-        <div className="relative z-10">
-          <div className="w-12 h-12 bg-accent rounded-2xl flex items-center justify-center font-bold text-xl text-white mb-12 shadow-2xl shadow-accent/20">
-            S
-          </div>
-          <h1 className="text-[12vw] lg:text-[8vw] font-bold text-white leading-[0.85] tracking-tighter uppercase mb-8">
-            Smart<br />Campus
-          </h1>
-          <p className="text-xl serif-italic text-white/40 max-w-sm leading-relaxed">
-            The next generation of university operations. Seamlessly manage facilities, assets, and maintenance.
-          </p>
-        </div>
+        <div className="relative z-10 flex flex-col h-full">
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex items-center gap-4 mb-24"
+          >
+            <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-ink shadow-2xl transition-transform hover:rotate-12">
+              <Command size={24} />
+            </div>
+            <div className="flex flex-col leading-none">
+              <span className="font-black text-2xl text-white tracking-tight">CampusHub</span>
+              <span className="text-[10px] font-bold tracking-[0.4em] text-accent uppercase">Enterprise OS</span>
+            </div>
+          </motion.div>
 
-        <div className="relative z-10 flex items-center gap-8 text-[10px] font-bold uppercase tracking-[0.3em] text-white/20">
-          <span>Est. 2026</span>
-          <div className="w-12 h-px bg-white/10" />
-          <span>IT3030 Module</span>
+          <div className="mt-auto">
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2 }}
+            >
+              <h1 className="text-6xl md:text-8xl font-black text-white leading-[0.85] tracking-tighter mb-8">
+                The Future<br />
+                <span className="text-accent italic serif-italic font-medium lowercase">is</span> Unified.
+              </h1>
+              <p className="text-xl text-white/50 max-w-sm leading-relaxed font-medium">
+                Experience the world's most advanced campus orchestration framework.
+              </p>
+            </motion.div>
+
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.2 }}
+              className="mt-16 flex items-center gap-8 text-[11px] font-bold uppercase tracking-[0.3em] text-white"
+            >
+              <span className="flex items-center gap-2"><Globe size={14} /> Global Node 01</span>
+              <div className="w-12 h-px bg-white/20" />
+              <span>Verified System</span>
+            </motion.div>
+          </div>
         </div>
       </div>
 
-      {/* Login Form Section */}
-      <div className="lg:w-1/2 flex items-center justify-center p-8 lg:p-24 bg-paper">
-        <div className="max-w-md w-full">
-          <div className="mb-12">
-            <h2 className="text-4xl font-bold tracking-tight text-ink mb-3">
-              Sign In <span className="text-accent text-2xl ml-2 font-medium">/ {selectedRole}</span>
+      {/* Modern Authentication Interface */}
+      <div className="flex-1 flex items-center justify-center p-8 lg:p-24 relative overflow-y-auto">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="max-w-md w-full"
+        >
+          <div className="mb-12 text-center lg:text-left">
+            <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
+               <div className="w-10 h-10 bg-accent rounded-xl flex items-center justify-center text-white shadow-xl">
+                <Command size={20} />
+              </div>
+              <span className="font-black text-2xl text-ink">CampusHub</span>
+            </div>
+            <h2 className="text-4xl font-black tracking-tight text-ink mb-4 flex items-center justify-center lg:justify-start gap-3">
+              Auth Pulse <ChevronRight size={24} className="text-accent" />
             </h2>
-            <p className="text-ink/40 font-medium">Enter your {selectedRole.toLowerCase()} credentials to access the hub.</p>
+            <p className="text-ink/40 font-semibold uppercase text-[11px] tracking-[0.1em]">Identity verification required for network access.</p>
           </div>
 
-          {error && (
-            <div className="mb-8 p-5 bg-red-50 border border-red-100 text-red-600 rounded-2xl text-xs font-bold uppercase tracking-wider flex items-center gap-3">
-              <div className="w-2 h-2 bg-red-600 rounded-full animate-pulse" />
-              {error}
-            </div>
-          )}
+          <div className="bg-white/40 backdrop-blur-xl rounded-[2.5rem] border border-white p-2 mb-10 shadow-xl flex gap-1">
+            {['USER', 'TECHNICIAN', 'ADMIN'].map((role) => (
+              <button
+                key={role}
+                onClick={() => handleRoleSwitch(role)}
+                className={cn(
+                  "flex-1 py-3.5 rounded-[1.75rem] text-[10px] font-black uppercase tracking-[0.15em] transition-all duration-300",
+                  selectedRole === role 
+                    ? "bg-ink text-white shadow-xl" 
+                    : "text-ink/30 hover:text-ink/60 hover:bg-white/50"
+                )}
+              >
+                {role}
+              </button>
+            ))}
+          </div>
 
-          <form onSubmit={handleSubmit} className="space-y-8">
+          <AnimatePresence mode="wait">
+            {error && (
+              <motion.div 
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="mb-8 p-5 bg-red-500/10 border border-red-500/20 text-red-500 rounded-3xl text-[11px] font-bold uppercase tracking-wider flex items-center gap-4 shadow-sm"
+              >
+                <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse shrink-0" />
+                {error}
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-ink/30 ml-1">Email Address</label>
+              <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-ink/30 ml-4">Credential Identity</label>
               <div className="relative group">
-                <Mail className="absolute left-5 top-1/2 -translate-y-1/2 text-ink/20 group-focus-within:text-accent transition-colors" size={18} />
+                <Mail className="absolute left-6 top-1/2 -translate-y-1/2 text-ink/20 group-focus-within:text-accent transition-colors" size={20} />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-14 pr-6 py-4 bg-white border border-black/5 rounded-2xl focus:ring-4 focus:ring-accent/5 focus:border-accent transition-all outline-none text-sm font-medium"
-                  placeholder={selectedRole === 'ADMIN' ? 'admin@university.edu' : selectedRole === 'TECHNICIAN' ? 'tech@university.edu' : 'student@university.edu'}
+                  className="w-full pl-16 pr-8 py-5 bg-white rounded-3xl focus:ring-4 focus:ring-accent/10 transition-all outline-none text-sm font-bold shadow-sm border border-transparent focus:border-border"
+                  placeholder={selectedRole === 'ADMIN' ? 'admin@node.hub' : selectedRole === 'TECHNICIAN' ? 'tech@node.hub' : 'student@node.hub'}
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-ink/30 ml-1">Password</label>
+              <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-ink/30 ml-4">Access Key</label>
               <div className="relative group">
-                <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-ink/20 group-focus-within:text-accent transition-colors" size={18} />
+                <Lock className="absolute left-6 top-1/2 -translate-y-1/2 text-ink/20 group-focus-within:text-accent transition-colors" size={20} />
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-14 pr-6 py-4 bg-white border border-black/5 rounded-2xl focus:ring-4 focus:ring-accent/5 focus:border-accent transition-all outline-none text-sm font-medium"
-                  placeholder="••••••••"
+                  className="w-full pl-16 pr-8 py-5 bg-white rounded-3xl focus:ring-4 focus:ring-accent/10 transition-all outline-none text-sm font-bold shadow-sm border border-transparent focus:border-border"
+                  placeholder="••••••••••••"
                 />
               </div>
             </div>
 
-            <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-widest">
+            <div className="flex items-center justify-between px-2 text-[11px] font-black uppercase tracking-widest text-ink/30">
               <label className="flex items-center gap-3 cursor-pointer group">
-                <input type="checkbox" className="w-4 h-4 rounded-lg border-black/5 text-accent focus:ring-accent" />
-                <span className="text-ink/40 group-hover:text-ink transition-colors">Remember me</span>
+                <input type="checkbox" className="w-4 h-4 rounded-lg bg-white border-none text-accent focus:ring-accent transition-all ring-offset-paper" />
+                <span className="group-hover:text-ink">Trust session</span>
               </label>
-              <a href="#" className="text-accent hover:underline underline-offset-4">Forgot?</a>
+              <a href="#" className="hover:text-accent transition-colors">Recovery Mode</a>
             </div>
 
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-5 bg-ink text-white rounded-2xl font-bold hover:bg-accent transition-all duration-500 shadow-2xl shadow-ink/10 disabled:opacity-50 flex items-center justify-center gap-3 text-sm uppercase tracking-widest"
+              className="w-full py-5 bg-ink text-white rounded-3xl font-black hover:bg-accent transition-all duration-500 shadow-2xl shadow-ink/10 disabled:opacity-50 flex items-center justify-center gap-4 text-[13px] uppercase tracking-[0.2em] group overflow-hidden relative active:scale-[0.98]"
             >
-              {isLoading ? (
-                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              ) : (
-                <>Enter Hub</>
-              )}
+              <span className="relative z-10">
+                {isLoading ? (
+                  <div className="w-5 h-5 border-3 border-white/30 border-t-white rounded-full animate-spin" />
+                ) : (
+                  <>Establish Connection <ChevronRight size={18} className="inline-block group-hover:translate-x-1 transition-transform" /></>
+                )}
+              </span>
+              <div className="absolute inset-0 bg-accent translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
             </button>
           </form>
 
-          <div className="mt-12">
+          <div className="mt-12 text-center">
             <div className="relative flex items-center justify-center mb-10">
-              <div className="w-full border-t border-black/5"></div>
-              <span className="absolute px-6 bg-paper text-[10px] font-bold uppercase tracking-[0.3em] text-ink/20">Select Portal</span>
+              <div className="w-full border-t border-border"></div>
+              <span className="absolute px-6 bg-paper text-[10px] font-black uppercase tracking-[0.3em] text-ink/20">Secure Link</span>
             </div>
 
-            <div className="grid grid-cols-3 gap-4">
-              <button 
-                onClick={() => handleRoleSwitch('ADMIN')}
-                className={`py-3 border rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all duration-300 ${selectedRole === 'ADMIN' ? 'bg-accent text-white border-accent' : 'bg-white border-black/5 text-ink/40 hover:bg-accent/5 hover:text-accent'}`}
-              >
-                Admin
+            <div className="flex gap-4 mb-12">
+              <button className="flex-1 py-4 bg-white rounded-2xl border border-border shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all text-ink/40 font-bold text-[11px] uppercase tracking-widest flex items-center justify-center gap-3">
+                <Globe size={16} className="grayscale" /> Link API
               </button>
-              <button 
-                onClick={() => handleRoleSwitch('TECHNICIAN')}
-                className={`py-3 border rounded-xl text-[10px) font-bold uppercase tracking-widest transition-all duration-300 ${selectedRole === 'TECHNICIAN' ? 'bg-orange-500 text-white border-orange-500' : 'bg-white border-black/5 text-ink/40 hover:bg-orange-500/5 hover:text-orange-500'}`}
-              >
-                Tech
-              </button>
-              <button 
-                onClick={() => handleRoleSwitch('USER')}
-                className={`py-3 border rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all duration-300 ${selectedRole === 'USER' ? 'bg-blue-500 text-white border-blue-500' : 'bg-white border-black/5 text-ink/40 hover:bg-blue-500/5 hover:text-blue-500'}`}
-              >
-                User
+              <button className="flex-1 py-4 bg-white rounded-2xl border border-border shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all text-ink/40 font-bold text-[11px] uppercase tracking-widest flex items-center justify-center gap-3">
+                <Github size={16} /> GitHub
               </button>
             </div>
+
+            <p className="text-ink/30 text-[11px] font-black uppercase tracking-[0.2em]">
+              Node Access Required?{' '}
+              <Link to={`/signup?role=${selectedRole}`} className="text-accent border-b border-accent/20 hover:border-accent pb-0.5 transition-all">Secure Account</Link>
+            </p>
           </div>
-
-          <div className="mt-12">
-            <div className="relative flex items-center justify-center mb-10">
-              <div className="w-full border-t border-black/5"></div>
-              <span className="absolute px-6 bg-paper text-[10px] font-bold uppercase tracking-[0.3em] text-ink/20">Social Access</span>
-            </div>
-
-            <button className="w-full py-4 bg-white border border-black/5 rounded-2xl font-bold text-ink/60 hover:bg-black hover:text-white transition-all duration-500 flex items-center justify-center gap-4 text-xs uppercase tracking-widest">
-              <img src="https://www.google.com/favicon.ico" className="w-4 h-4 grayscale group-hover:grayscale-0" alt="Google" />
-              Google Login
-            </button>
-          </div>
-
-          <p className="mt-12 text-center text-ink/30 text-[11px] font-bold uppercase tracking-widest">
-            New here?{' '}
-            <Link to={`/signup?role=${selectedRole}`} className="text-accent hover:underline underline-offset-4">Create {selectedRole.toLowerCase()} Account</Link>
-          </p>
-        </div>
+        </motion.div>
       </div>
     </div>
   );
