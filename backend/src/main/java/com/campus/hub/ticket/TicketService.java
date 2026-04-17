@@ -42,8 +42,21 @@ public class TicketService {
     public Ticket updateTicketStatus(String id, String status) {
         Ticket ticket = ticketRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Ticket not found"));
+        
         ticket.setStatus(status);
-        return ticketRepository.save(ticket);
+        Ticket savedTicket = ticketRepository.save(ticket);
+
+        // Notify user if ticket is resolved or rejected
+        if ("RESOLVED".equals(status) || "REJECTED".equals(status)) {
+            Notification notification = new Notification();
+            notification.setUserId(ticket.getCreatedBy());
+            notification.setMessage("Your ticket \"" + ticket.getTitle() + "\" has been " + status + ".");
+            notification.setType("RESOLVED".equals(status) ? "SUCCESS" : "ERROR");
+            notification.setTimestamp(LocalDateTime.now());
+            notificationService.createNotification(notification);
+        }
+
+        return savedTicket;
     }
 
     public Ticket assignTechnician(String id, String technicianId, String technicianName) {

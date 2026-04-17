@@ -15,11 +15,14 @@ import {
 import { cn } from '../../lib/utils';
 import { notificationService, Notification, NotificationType } from './notificationService';
 import { useAuth } from '../../shared/context/AuthContext';
+import { ConfirmModal } from '../../shared/components/ConfirmModal';
 
 export const NotificationsPage: React.FC = () => {
   const { user } = useAuth();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [notificationToDelete, setNotificationToDelete] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchNotifications = async () => {
@@ -42,9 +45,17 @@ export const NotificationsPage: React.FC = () => {
     setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
   };
 
-  const handleDelete = async (id: string) => {
-    await notificationService.deleteNotification(id);
-    setNotifications(prev => prev.filter(n => n.id !== id));
+  const handleDeleteClick = (id: string) => {
+    setNotificationToDelete(id);
+    setIsConfirmOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (notificationToDelete) {
+      await notificationService.deleteNotification(notificationToDelete);
+      setNotifications(prev => prev.filter(n => n.id !== notificationToDelete));
+      setNotificationToDelete(null);
+    }
   };
 
   const filteredNotifications = notifications;
@@ -140,7 +151,7 @@ export const NotificationsPage: React.FC = () => {
 
                 <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                   <button 
-                    onClick={() => handleDelete(notification.id)}
+                    onClick={() => handleDeleteClick(notification.id)}
                     className="p-3 hover:bg-red-50 text-ink/20 hover:text-red-500 rounded-xl transition-all"
                   >
                     <Trash2 size={18} />
@@ -159,6 +170,14 @@ export const NotificationsPage: React.FC = () => {
           </div>
         )}
       </div>
+
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Notification?"
+        message="Are you sure you want to permanently remove this notification from your inbox? This action cannot be undone."
+      />
     </div>
   );
 };

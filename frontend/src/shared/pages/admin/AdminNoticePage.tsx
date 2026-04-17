@@ -17,6 +17,7 @@ import { notificationService, NotificationType, Notification } from '../../../fe
 import { toast } from 'sonner';
 import { cn } from '../../../lib/utils';
 import { format } from 'date-fns';
+import { ConfirmModal } from '../../components/ConfirmModal';
 
 export const AdminNoticePage: React.FC = () => {
   const [message, setMessage] = useState('');
@@ -24,6 +25,8 @@ export const AdminNoticePage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [recentNotices, setRecentNotices] = useState<Notification[]>([]);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [noticeToDelete, setNoticeToDelete] = useState<string | null>(null);
 
   const fetchHistory = async () => {
     setIsLoadingHistory(true);
@@ -66,13 +69,22 @@ export const AdminNoticePage: React.FC = () => {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    try {
-      await notificationService.deleteNotification(id);
-      toast.success('Notice deleted');
-      fetchHistory();
-    } catch (error) {
-      toast.error('Failed to delete notice');
+  const handleDeleteClick = (id: string) => {
+    setNoticeToDelete(id);
+    setIsConfirmOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (noticeToDelete) {
+      try {
+        await notificationService.deleteNotification(noticeToDelete);
+        toast.success('Notice deleted');
+        fetchHistory();
+      } catch (error) {
+        toast.error('Failed to delete notice');
+      } finally {
+        setNoticeToDelete(null);
+      }
     }
   };
 
@@ -213,7 +225,7 @@ export const AdminNoticePage: React.FC = () => {
                         {notice.type === 'ERROR' && <AlertCircle size={14} />}
                       </div>
                       <button 
-                        onClick={() => handleDelete(notice.id)}
+                        onClick={() => handleDeleteClick(notice.id)}
                         className="opacity-0 group-hover/item:opacity-100 p-2 text-red-400 hover:text-red-600 transition-all"
                       >
                         <Trash2 size={14} />
@@ -257,6 +269,14 @@ export const AdminNoticePage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Global Notice?"
+        message="Are you sure you want to delete this announcement? It will be removed from all users' notification feeds permanently."
+      />
     </div>
   );
 };

@@ -28,4 +28,8 @@ public class NotificationService {
         }
         return notificationRepository.save(notification);
     }
+
+    public void deleteNotification(String id) {
+        notificationRepository.deleteById(id);
+    }
 }

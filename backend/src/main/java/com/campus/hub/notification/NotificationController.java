@@ -20,4 +20,9 @@ public class NotificationController {
     public Notification createNotification(@RequestBody Notification notification) {
         return notificationService.createNotification(notification);
     }
+
+    @DeleteMapping("/{id}")
+    public void deleteNotification(@PathVariable String id) {
+        notificationService.deleteNotification(id);
+    }
 }

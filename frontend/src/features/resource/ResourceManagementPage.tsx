@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { resourceService, Resource, ResourceStatus } from './resourceService';
+import { ConfirmModal } from '../../shared/components/ConfirmModal';
 
 export const ResourceManagementPage: React.FC = () => {
   const [resources, setResources] = useState<Resource[]>([]);
@@ -22,6 +23,8 @@ export const ResourceManagementPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState<ResourceStatus | 'ALL'>('ALL');
   const [showModal, setShowModal] = useState(false);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [resourceToDelete, setResourceToDelete] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [currentResource, setCurrentResource] = useState<Partial<Resource>>({
     name: '',
@@ -94,14 +97,21 @@ export const ResourceManagementPage: React.FC = () => {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (window.confirm('Are you sure you want to delete this resource?')) {
+  const handleDeleteClick = (id: string) => {
+    setResourceToDelete(id);
+    setIsConfirmOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (resourceToDelete) {
       try {
-        await resourceService.deleteResource(id);
+        await resourceService.deleteResource(resourceToDelete);
         await fetchResources();
       } catch (error) {
         console.error('Failed to delete resource:', error);
         alert('Error deleting resource.');
+      } finally {
+        setResourceToDelete(null);
       }
     }
   };
@@ -228,7 +238,7 @@ export const ResourceManagementPage: React.FC = () => {
                       <Edit2 size={16} />
                     </button>
                     <button 
-                      onClick={() => resource.id && handleDelete(resource.id)}
+                      onClick={() => resource.id && handleDeleteClick(resource.id)}
                       className="p-3 hover:bg-red-50 rounded-xl transition-all text-ink/40 hover:text-red-500"
                     >
                       <Trash2 size={16} />
@@ -380,6 +390,14 @@ export const ResourceManagementPage: React.FC = () => {
           </div>
         </div>
       )}
+
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Resource?"
+        message="Are you sure you want to delete this campus resource? This will remove all associated booking data and cannot be undone."
+      />
     </div>
   );
 };
