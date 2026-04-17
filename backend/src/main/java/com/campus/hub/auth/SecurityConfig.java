@@ -51,6 +51,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**", "/login/oauth2/**", "/api/health").permitAll()
                 .requestMatchers("/api/bookings/{id}/status").hasAnyRole("ADMIN", "TECHNICIAN")
                 .requestMatchers("/api/bookings/{id}/cancel").authenticated()
+                .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/resources/**").authenticated()
                 .requestMatchers("/api/admin/**", "/api/resources/**").hasRole("ADMIN")
                 .requestMatchers("/api/technician/**").hasAnyRole("TECHNICIAN", "ADMIN")
                 .requestMatchers("/api/**").authenticated()
