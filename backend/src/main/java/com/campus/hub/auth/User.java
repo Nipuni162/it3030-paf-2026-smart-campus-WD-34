@@ -11,6 +11,8 @@ public class User {
     private String email;
     private String password;
     private String role; // USER | ADMIN | TECHNICIAN
+    private String provider; // e.g., "google"
+    private String providerId; // External ID from OAuth provider
 
     public User() {}
 
@@ -36,4 +38,10 @@ public class User {
 
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
+
+    public String getProvider() { return provider; }
+    public void setProvider(String provider) { this.provider = provider; }
+
+    public String getProviderId() { return providerId; }
+    public void setProviderId(String providerId) { this.providerId = providerId; }
 }

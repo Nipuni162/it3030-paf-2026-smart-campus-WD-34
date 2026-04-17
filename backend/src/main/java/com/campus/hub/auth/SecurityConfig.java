@@ -12,12 +12,24 @@ import org.springframework.security.config.Customizer;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    @Autowired
+    private CustomOAuth2UserService oauth2UserService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -30,11 +42,36 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .cors(Customizer.withDefaults())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api/**").permitAll() // Allowing all APIs for now as per plan
+                .requestMatchers("/api/auth/**", "/login/oauth2/**").permitAll()
+                .requestMatchers("/api/**").permitAll()
                 .anyRequest().permitAll()
+            )
+            .oauth2Login(oauth2 -> oauth2
+                .userInfoEndpoint(userInfo -> userInfo.userService(oauth2UserService))
+                .successHandler(oauth2AuthenticationSuccessHandler())
             );
         return http.build();
+    }
+
+    @Bean
+    public AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler() {
+        return (request, response, authentication) -> {
+            org.springframework.security.oauth2.core.user.OAuth2User oauth2User = 
+                (org.springframework.security.oauth2.core.user.OAuth2User) authentication.getPrincipal();
+            String email = oauth2User.getAttribute("email");
+            
+            User user = userRepository.findByEmail(email).orElseThrow();
+            
+            // Generate mock token matching manual login format
+            String token = "real-db-authenticated-token-" + user.getId();
+            
+            // Format user object for JSON
+            ObjectMapper mapper = new ObjectMapper();
+            String userJson = mapper.writeValueAsString(user);
+            String encodedUser = URLEncoder.encode(userJson, StandardCharsets.UTF_8);
+
+            response.sendRedirect("http://localhost:3000/oauth2/callback?token=" + token + "&user=" + encodedUser);
+        };
     }
 
     @Bean

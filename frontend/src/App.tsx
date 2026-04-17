@@ -21,6 +21,7 @@ import { NotificationsPage } from './features/notification/NotificationsPage';
 import { MyBookingsPage } from './features/booking/MyBookingsPage';
 import { UnauthorizedPage } from './shared/pages/UnauthorizedPage';
 import { AdminNoticePage } from './shared/pages/admin/AdminNoticePage';
+import { OAuth2Callback } from './shared/pages/OAuth2Callback';
 
 export default function App() {
   return (
@@ -32,6 +33,7 @@ export default function App() {
             {/* Public Routes */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
+            <Route path="/oauth2/callback" element={<OAuth2Callback />} />
             <Route path="/unauthorized" element={<UnauthorizedPage />} />
 
             {/* Protected Dashboard Routes */}

@@ -20,6 +20,7 @@ com\campus\hub\auth\AuthController.class
 com\campus\hub\notification\NotificationService.class
 com\campus\hub\booking\BookingRepository.class
 com\campus\hub\ticket\TicketService.class
+com\campus\hub\auth\CustomOAuth2UserService.class
 com\campus\hub\resource\ResourceService.class
 com\campus\hub\auth\User.class
 com\campus\hub\notification\NotificationRepository.class
