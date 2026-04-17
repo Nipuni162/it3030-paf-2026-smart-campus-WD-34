@@ -114,7 +114,7 @@ if exist "%WRAPPER_JAR%" (
 @REM Provide a "standard" way to retrieve the CLI args
 set MAVEN_CMD_LINE_ARGS=%*
 
-"%JAVA_HOME%\bin\java.exe" %MAVEN_OPTS% -classpath "%WRAPPER_JAR%" %WRAPPER_LAUNCHER% %MAVEN_CMD_LINE_ARGS%
+"%JAVA_HOME%\bin\java.exe" %MAVEN_OPTS% --enable-native-access=ALL-UNNAMED "-Dmaven.multiModuleProjectDirectory=%MAVEN_PROJECTBASEDIR%" -classpath "%WRAPPER_JAR%" %WRAPPER_LAUNCHER% %MAVEN_CMD_LINE_ARGS%
 if not %ERRORLEVEL% == 0 goto error
 goto end
 
