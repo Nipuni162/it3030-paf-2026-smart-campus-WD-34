@@ -42,7 +42,12 @@ public class BookingController {
     @PatchMapping("/{id}/status")
     public ResponseEntity<Booking> updateBookingStatus(@PathVariable String id, @RequestBody Map<String, String> statusMap) {
         try {
-            return ResponseEntity.ok(bookingService.updateBookingStatus(id, statusMap.get("status")));
+            return ResponseEntity.ok(bookingService.updateBookingStatus(
+                id, 
+                statusMap.get("status"),
+                statusMap.get("adminEmail"),
+                statusMap.get("adminName")
+            ));
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }

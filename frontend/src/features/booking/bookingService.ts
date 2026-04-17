@@ -38,14 +38,20 @@ export const bookingService = {
     return response.data;
   },
 
-  approveBooking: async (id: string): Promise<void> => {
-    await api.patch(`/bookings/${id}/status`, { status: 'APPROVED' });
+  approveBooking: async (id: string, adminEmail?: string, adminName?: string): Promise<void> => {
+    await api.patch(`/bookings/${id}/status`, { 
+      status: 'APPROVED',
+      adminEmail,
+      adminName
+    });
   },
 
-  rejectBooking: async (id: string, reason: string): Promise<void> => {
+  rejectBooking: async (id: string, reason: string, adminEmail?: string, adminName?: string): Promise<void> => {
     await api.patch(`/bookings/${id}/status`, { 
       status: 'REJECTED',
-      rejectionReason: reason 
+      rejectionReason: reason,
+      adminEmail,
+      adminName
     });
   }
 };

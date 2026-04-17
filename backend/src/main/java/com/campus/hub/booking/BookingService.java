@@ -42,7 +42,7 @@ public class BookingService {
         return bookingRepository.save(booking);
     }
 
-    public Booking updateBookingStatus(String id, String status) {
+    public Booking updateBookingStatus(String id, String status, String adminEmail, String adminName) {
         Booking booking = bookingRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Booking not found"));
         booking.setStatus(status);
@@ -50,7 +50,12 @@ public class BookingService {
         // Create notification for user
         Notification notification = new Notification();
         notification.setUserId(booking.getUserId());
-        notification.setMessage("Your booking for " + booking.getResourceName() + " has been " + status.toLowerCase());
+        
+        // Build clear message with admin info
+        String adminInfo = adminEmail != null ? adminEmail : "An administrator";
+        String message = adminInfo + " has " + status.toLowerCase() + " your booking request for " + booking.getResourceName();
+        
+        notification.setMessage(message);
         notification.setType(status.equals("APPROVED") ? "SUCCESS" : "WARNING");
         notificationService.createNotification(notification);
 

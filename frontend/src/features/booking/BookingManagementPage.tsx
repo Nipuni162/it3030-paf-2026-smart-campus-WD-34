@@ -16,8 +16,10 @@ import {
 import { cn } from '../../lib/utils';
 import { bookingService, Booking, BookingStatus } from './bookingService';
 import { userService } from '../../shared/services/userService';
+import { useAuth } from '../../shared/context/AuthContext';
 
 export const BookingManagementPage: React.FC = () => {
+  const { user } = useAuth();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -59,13 +61,13 @@ export const BookingManagementPage: React.FC = () => {
   }, []);
 
   const handleApprove = async (id: string) => {
-    await bookingService.approveBooking(id);
+    await bookingService.approveBooking(id, user?.email, user?.name);
     const data = await bookingService.getBookings();
     setBookings([...data]);
   };
 
   const handleReject = async (id: string) => {
-    await bookingService.rejectBooking(id, rejectionReason);
+    await bookingService.rejectBooking(id, rejectionReason, user?.email, user?.name);
     const data = await bookingService.getBookings();
     setBookings([...data]);
     setShowRejectModal(null);
