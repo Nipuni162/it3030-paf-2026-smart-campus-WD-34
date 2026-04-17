@@ -58,4 +58,13 @@ public class BookingController {
         bookingService.deleteBooking(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PatchMapping("/{id}/cancel")
+    public ResponseEntity<?> cancelBooking(@PathVariable String id, @RequestBody Map<String, String> body) {
+        try {
+            return ResponseEntity.ok(bookingService.cancelBooking(id, body.get("userId"), body.get("reason")));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
+        }
+    }
 }

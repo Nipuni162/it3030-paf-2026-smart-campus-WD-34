@@ -1,5 +1,7 @@
 package com.campus.hub.booking;
 
+import com.campus.hub.auth.User;
+import com.campus.hub.auth.UserRepository;
 import com.campus.hub.notification.Notification;
 import com.campus.hub.notification.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,9 @@ public class BookingService {
 
     @Autowired
     private NotificationService notificationService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     public List<Booking> getAllBookings() {
         return bookingRepository.findAll();
@@ -64,5 +69,33 @@ public class BookingService {
 
     public void deleteBooking(String id) {
         bookingRepository.deleteById(id);
+    }
+
+    public Booking cancelBooking(String id, String userId, String reason) {
+        Booking booking = bookingRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Booking not found"));
+        
+        if (!booking.getUserId().equals(userId)) {
+            throw new RuntimeException("Unauthorized to cancel this booking");
+        }
+
+        booking.setStatus("CANCELLED");
+        Booking savedBooking = bookingRepository.save(booking);
+
+        // Notify all Admin users
+        List<User> admins = userRepository.findByRole("ADMIN");
+        String reasonText = (reason != null && !reason.trim().isEmpty()) ? ". Reason: " + reason : ".";
+        
+        for (User admin : admins) {
+            Notification adminNotification = new Notification();
+            adminNotification.setUserId(admin.getId());
+            adminNotification.setMessage("Booking Cancelled: User " + booking.getUserName() + 
+                " has cancelled their reservation for " + booking.getResourceName() + 
+                " on " + booking.getDate() + reasonText);
+            adminNotification.setType("WARNING");
+            notificationService.createNotification(adminNotification);
+        }
+
+        return savedBooking;
     }
 }

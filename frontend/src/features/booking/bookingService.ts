@@ -53,6 +53,10 @@ export const bookingService = {
       adminEmail,
       adminName
     });
+  },
+
+  cancelBooking: async (id: string, userId: string, reason: string): Promise<void> => {
+    await api.patch(`/bookings/${id}/cancel`, { userId, reason });
   }
 };
 

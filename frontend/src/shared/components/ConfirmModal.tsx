@@ -6,12 +6,14 @@ import { cn } from '../../lib/utils';
 interface ConfirmModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: () => void;
+  onConfirm: (data?: string) => void;
   title: string;
   message: string;
   confirmText?: string;
   cancelText?: string;
   type?: 'danger' | 'warning' | 'info';
+  hasInput?: boolean;
+  inputPlaceholder?: string;
 }
 
 export const ConfirmModal: React.FC<ConfirmModalProps> = ({
@@ -22,8 +24,15 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
   message,
   confirmText = 'Delete',
   cancelText = 'Cancel',
-  type = 'danger'
+  type = 'danger',
+  hasInput = false,
+  inputPlaceholder = 'Enter reason...'
 }) => {
+  const [inputValue, setInputValue] = React.useState('');
+
+  React.useEffect(() => {
+    if (isOpen) setInputValue('');
+  }, [isOpen]);
   return (
     <AnimatePresence>
       {isOpen && (
@@ -65,6 +74,18 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
                 {message}
               </p>
 
+              {hasInput && (
+                <div className="mt-8 space-y-3">
+                  <textarea
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    placeholder={inputPlaceholder}
+                    rows={4}
+                    className="w-full px-5 py-4 bg-paper border border-black/5 rounded-2xl text-sm font-medium focus:ring-4 focus:ring-accent/5 focus:border-accent outline-none transition-all duration-300 resize-none leading-relaxed"
+                  />
+                </div>
+              )}
+
               <div className="mt-10 flex gap-4">
                 <button
                   onClick={onClose}
@@ -74,11 +95,12 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
                 </button>
                 <button
                   onClick={() => {
-                    onConfirm();
+                    onConfirm(inputValue);
                     onClose();
                   }}
+                  disabled={hasInput && !inputValue.trim()}
                   className={cn(
-                    "flex-1 py-4 rounded-2xl text-[11px] font-bold uppercase tracking-[0.2em] text-white transition-all duration-500 shadow-xl active:scale-[0.98]",
+                    "flex-1 py-4 rounded-2xl text-[11px] font-bold uppercase tracking-[0.2em] text-white transition-all duration-500 shadow-xl active:scale-[0.98] disabled:opacity-30 disabled:grayscale disabled:scale-100 disabled:shadow-none",
                     type === 'danger' ? "bg-red-500 hover:bg-red-600 shadow-red-500/20" :
                     type === 'warning' ? "bg-orange-500 hover:bg-orange-600 shadow-orange-500/20" :
                     "bg-accent hover:bg-accent/90 shadow-accent/20"
