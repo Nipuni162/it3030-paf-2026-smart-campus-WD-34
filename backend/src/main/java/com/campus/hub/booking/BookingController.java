@@ -46,7 +46,8 @@ public class BookingController {
                 id, 
                 statusMap.get("status"),
                 statusMap.get("adminEmail"),
-                statusMap.get("adminName")
+                statusMap.get("adminName"),
+                statusMap.get("rejectionReason")
             ));
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();

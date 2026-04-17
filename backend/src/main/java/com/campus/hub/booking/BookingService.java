@@ -47,20 +47,32 @@ public class BookingService {
         return bookingRepository.save(booking);
     }
 
-    public Booking updateBookingStatus(String id, String status, String adminEmail, String adminName) {
+    public Booking updateBookingStatus(String id, String status, String adminEmail, String adminName, String rejectionReason) {
         Booking booking = bookingRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Booking not found"));
         booking.setStatus(status);
+        
+        if (status.equals("REJECTED") && rejectionReason != null) {
+            booking.setRejectionReason(rejectionReason);
+        }
         
         // Create notification for user
         Notification notification = new Notification();
         notification.setUserId(booking.getUserId());
         
-        // Build clear message with admin info
+        // Build clear message with admin info and reason
         String adminInfo = adminEmail != null ? adminEmail : "An administrator";
-        String message = adminInfo + " has " + status.toLowerCase() + " your booking request for " + booking.getResourceName();
+        StringBuilder messageBuilder = new StringBuilder(adminInfo)
+            .append(" has ")
+            .append(status.toLowerCase())
+            .append(" your booking request for ")
+            .append(booking.getResourceName());
+            
+        if (status.equals("REJECTED") && rejectionReason != null && !rejectionReason.trim().isEmpty()) {
+            messageBuilder.append(". Reason: ").append(rejectionReason);
+        }
         
-        notification.setMessage(message);
+        notification.setMessage(messageBuilder.toString());
         notification.setType(status.equals("APPROVED") ? "SUCCESS" : "WARNING");
         notificationService.createNotification(notification);
 
