@@ -10,6 +10,7 @@ com\campus\hub\ticket\TicketController.class
 com\campus\hub\auth\AuthService.class
 com\campus\hub\HubApplication.class
 com\campus\hub\auth\UserRepository.class
+com\campus\hub\auth\JwtAuthenticationFilter.class
 com\campus\hub\ticket\TicketComment.class
 com\campus\hub\ticket\TicketRepository.class
 com\campus\hub\auth\SecurityConfig.class

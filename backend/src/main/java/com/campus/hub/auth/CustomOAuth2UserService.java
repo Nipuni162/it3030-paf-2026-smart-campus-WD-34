@@ -30,30 +30,31 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String email = oauth2User.getAttribute("email");
         String name = oauth2User.getAttribute("name");
         String provider = userRequest.getClientRegistration().getRegistrationId();
-        String providerId = oauth2User.getAttribute("sub"); // Google's unique subject ID
+        String providerId = oauth2User.getAttribute("sub");
 
         Optional<User> userOptional = userRepository.findByEmail(email);
         User user;
 
         if (userOptional.isPresent()) {
             user = userOptional.get();
-            // Update existing user if needed
-            if (user.getProvider() == null) {
-                user.setProvider(provider);
-                user.setProviderId(providerId);
-                userRepository.save(user);
-            }
         } else {
-            // Register new user
             user = new User();
             user.setName(name);
             user.setEmail(email);
-            user.setRole("USER"); // Default role
+            user.setRole("USER");
             user.setProvider(provider);
             user.setProviderId(providerId);
             userRepository.save(user);
         }
 
-        return oauth2User;
+        // Return user with role-based authorities
+        java.util.List<org.springframework.security.core.GrantedAuthority> authorities = 
+            java.util.Collections.singletonList(new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_" + user.getRole()));
+
+        return new org.springframework.security.oauth2.core.user.DefaultOAuth2User(
+            authorities, 
+            oauth2User.getAttributes(), 
+            "email"
+        );
     }
 }
