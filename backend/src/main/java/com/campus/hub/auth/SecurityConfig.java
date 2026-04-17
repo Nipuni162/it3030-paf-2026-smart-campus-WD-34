@@ -48,7 +48,7 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .cors(Customizer.withDefaults())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**", "/login/oauth2/**").permitAll()
+                .requestMatchers("/api/auth/**", "/login/oauth2/**", "/api/health").permitAll()
                 .requestMatchers("/api/bookings/{id}/status").hasAnyRole("ADMIN", "TECHNICIAN")
                 .requestMatchers("/api/bookings/{id}/cancel").authenticated()
                 .requestMatchers("/api/admin/**", "/api/resources/**").hasRole("ADMIN")
