@@ -150,14 +150,6 @@ export const Dashboard: React.FC = () => {
     fetchBookings();
   }, []);
 
-  if (user?.role === 'ADMIN') {
-    return <AdminDashboard />;
-  }
-
-  if (user?.role === 'TECHNICIAN') {
-    return <TechnicianDashboard />;
-  }
-
   return (
     <div className="flex flex-col pb-24">
       <HeroCarousel />

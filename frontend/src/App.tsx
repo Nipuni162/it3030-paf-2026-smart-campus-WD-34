@@ -21,6 +21,7 @@ import { NotificationsPage } from './features/notification/NotificationsPage';
 import { MyBookingsPage } from './features/booking/MyBookingsPage';
 import { UnauthorizedPage } from './shared/pages/UnauthorizedPage';
 import { AdminNoticePage } from './shared/pages/admin/AdminNoticePage';
+import { TechnicianDashboard } from './shared/pages/TechnicianDashboard';
 import { OAuth2Callback } from './shared/pages/OAuth2Callback';
 
 export default function App() {
@@ -59,6 +60,11 @@ export default function App() {
                   <AdminDashboard />
                 </ProtectedRoute>
               } />
+              <Route path="admin/overview" element={
+                <ProtectedRoute allowedRoles={['ADMIN']}>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              } />
               <Route path="admin/resources" element={
                 <ProtectedRoute allowedRoles={['ADMIN']}>
                   <ResourceManagementPage />
@@ -78,6 +84,11 @@ export default function App() {
               <Route path="notifications" element={<NotificationsPage />} />
 
               {/* Technician Specific Routes */}
+              <Route path="technician/overview" element={
+                <ProtectedRoute allowedRoles={['TECHNICIAN']}>
+                  <TechnicianDashboard />
+                </ProtectedRoute>
+              } />
               <Route path="technician">
                 <Route path="tickets" element={
                   <ProtectedRoute allowedRoles={['TECHNICIAN']}>

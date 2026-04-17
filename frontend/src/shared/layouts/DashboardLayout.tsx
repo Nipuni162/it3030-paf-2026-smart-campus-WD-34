@@ -16,7 +16,8 @@ import {
   Moon,
   Megaphone,
   ChevronRight,
-  Command
+  Command,
+  Layout
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAuth } from '../context/AuthContext';
@@ -50,20 +51,24 @@ export const DashboardLayout: React.FC = () => {
   const isAdminOrTech = user?.role === 'ADMIN' || user?.role === 'TECHNICIAN';
 
   const navItems = [
-    { icon: <LayoutDashboard size={18} />, label: 'Dashboard', path: '/' },
-    ...(user?.role === 'TECHNICIAN' ? [
-      { icon: <Ticket size={18} />, label: 'My Tickets', path: '/technician/tickets' }
-    ] : []),
-    ...(user?.role !== 'TECHNICIAN' ? [
-      { icon: <Calendar size={18} />, label: 'Bookings', path: '/bookings' },
-      { icon: <Calendar size={18} />, label: 'My Bookings', path: '/my-bookings' },
-      { icon: <Ticket size={18} />, label: 'Tickets', path: '/tickets' }
-    ] : []),
+    { icon: <LayoutDashboard size={18} />, label: 'Campus Pulse', path: '/' },
+    
+    // Management Tools (Role Specific)
     ...(user?.role === 'ADMIN' ? [
+      { icon: <Layout size={18} />, label: 'Admin Console', path: '/admin/overview' },
       { icon: <Settings size={18} />, label: 'Resources', path: '/admin/resources' },
       { icon: <Calendar size={18} />, label: 'Manage Bookings', path: '/admin/bookings' },
       { icon: <Megaphone size={18} />, label: 'Publish Notice', path: '/admin/notices' }
     ] : []),
+    ...(user?.role === 'TECHNICIAN' ? [
+      { icon: <Layout size={18} />, label: 'Tech Console', path: '/technician/overview' },
+      { icon: <Ticket size={18} />, label: 'Task Inbox', path: '/technician/tickets' }
+    ] : []),
+
+    // Universal Campus Services
+    { icon: <Calendar size={18} />, label: 'Book Facility', path: '/bookings' },
+    { icon: <Calendar size={18} />, label: 'My Bookings', path: '/my-bookings' },
+    { icon: <Ticket size={18} />, label: 'Support Tickets', path: '/tickets' },
     { icon: <Bell size={18} />, label: 'Notifications', path: '/notifications' },
   ];
 
