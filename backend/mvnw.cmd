@@ -86,25 +86,25 @@ set MAVEN_PROJECTBASEDIR=%CD%
 
 :endReadBaseDir
 
-set WRAPPER_JAR="%MAVEN_PROJECTBASEDIR%\.mvn\wrapper\maven-wrapper.jar"
+set WRAPPER_JAR=%MAVEN_PROJECTBASEDIR%\.mvn\wrapper\maven-wrapper.jar
 set WRAPPER_LAUNCHER=org.apache.maven.wrapper.MavenWrapperMain
 
-set DOWNLOAD_URL="https://repo.maven.apache.org/maven2/org/apache/maven/wrapper/maven-wrapper/3.2.0/maven-wrapper-3.2.0.jar"
+set DOWNLOAD_URL=https://repo.maven.apache.org/maven2/org/apache/maven/wrapper/maven-wrapper/3.2.0/maven-wrapper-3.2.0.jar
 
-if exist %WRAPPER_JAR% (
+if exist "%WRAPPER_JAR%" (
     if "%MVNW_VERBOSE%" == "true" (
-        echo Found %WRAPPER_JAR%
+        echo Found "%WRAPPER_JAR%"
     )
 ) else (
     if not "%MVNW_REPOURL%" == "" (
-        set DOWNLOAD_URL="%MVNW_REPOURL%/org/apache/maven/wrapper/maven-wrapper/3.2.0/maven-wrapper-3.2.0.jar"
+        set DOWNLOAD_URL=%MVNW_REPOURL%/org/apache/maven/wrapper/maven-wrapper/3.2.0/maven-wrapper-3.2.0.jar
     )
     if "%MVNW_VERBOSE%" == "true" (
-        echo Couldn't find %WRAPPER_JAR%, downloading it ...
+        echo Couldn't find "%WRAPPER_JAR%", downloading it ...
         echo Downloading from: %DOWNLOAD_URL%
     )
 
-    powershell -Command "if ($PSVersionTable.PSVersion.Major -ge 3) { [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; $webclient = New-Object System.Net.WebClient; $webclient.DownloadFile($DOWNLOAD_URL, $WRAPPER_JAR) } else { (New-Object System.Net.WebClient).DownloadFile($DOWNLOAD_URL, $WRAPPER_JAR) }"
+    powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; (New-Object System.Net.WebClient).DownloadFile('%DOWNLOAD_URL%', '%WRAPPER_JAR%')"
     if not %ERRORLEVEL% == 0 (
         echo Error: Could not download %WRAPPER_JAR% >&2
         goto error
@@ -114,7 +114,7 @@ if exist %WRAPPER_JAR% (
 @REM Provide a "standard" way to retrieve the CLI args
 set MAVEN_CMD_LINE_ARGS=%*
 
-%JAVA_HOME%\bin\java.exe %MAVEN_OPTS% -classpath %WRAPPER_JAR% %WRAPPER_LAUNCHER% %MAVEN_CMD_LINE_ARGS%
+"%JAVA_HOME%\bin\java.exe" %MAVEN_OPTS% -classpath "%WRAPPER_JAR%" %WRAPPER_LAUNCHER% %MAVEN_CMD_LINE_ARGS%
 if not %ERRORLEVEL% == 0 goto error
 goto end
 
