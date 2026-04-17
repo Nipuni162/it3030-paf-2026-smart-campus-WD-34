@@ -9,7 +9,8 @@ public class HubApplication {
 
 	public static void main(String[] args) {
 		Dotenv dotenv = Dotenv.configure()
-				.filename(".env.local")
+				.directory("..")
+				.filename(".env")
 				.ignoreIfMissing()
 				.load();
 		

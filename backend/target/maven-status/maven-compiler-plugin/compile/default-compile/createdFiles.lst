@@ -3,6 +3,7 @@ com\campus\hub\resource\Resource.class
 com\campus\hub\auth\UserService.class
 com\campus\hub\ticket\Ticket.class
 com\campus\hub\booking\BookingController.class
+com\campus\hub\controller\HealthController.class
 com\campus\hub\booking\BookingService.class
 com\campus\hub\resource\ResourceController.class
 com\campus\hub\ticket\TicketController.class
