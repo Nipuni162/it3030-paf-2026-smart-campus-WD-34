@@ -206,7 +206,7 @@ export const LoginPage: React.FC = () => {
 
             <div className="flex gap-4 mb-12">
               <button 
-                onClick={() => window.location.href = 'http://localhost:8080/oauth2/authorization/google'}
+                onClick={() => window.location.href = 'http://localhost:8081/oauth2/authorization/google'}
                 className="flex-1 py-4 bg-white rounded-2xl border border-border shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all text-ink/40 font-bold text-[11px] uppercase tracking-widest flex items-center justify-center gap-3"
               >
                 <div className="w-4 h-4 overflow-hidden rounded-full">

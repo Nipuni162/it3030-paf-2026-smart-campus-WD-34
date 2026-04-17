@@ -5,14 +5,14 @@ import axios from "axios";
 
 async function checkDatabase() {
   try {
-    const response = await axios.get("http://localhost:8080/api/health", { timeout: 3000 });
+    const response = await axios.get("http://localhost:8081/api/health", { timeout: 3000 });
     if (response.data.status === "UP") {
       console.log("\x1b[32m%s\x1b[0m", "✅ Connected to MongoDB (via Backend)");
     } else {
       console.log("\x1b[33m%s\x1b[0m", "⚠️  Backend reached, but MongoDB is DISCONNECTED");
     }
   } catch (error) {
-    console.log("\x1b[31m%s\x1b[0m", "❌ Backend Offline - ensure Spring Boot is running on port 8080");
+    console.log("\x1b[31m%s\x1b[0m", "❌ Backend Offline - ensure Spring Boot is running on port 8081");
   }
 }
 
