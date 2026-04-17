@@ -15,6 +15,8 @@ View your app in AI Studio: https://ai.studio/apps/6f63c283-87d5-4af3-9fbc-5a4ff
 
 1. Install dependencies:
    `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
+2. Set your configuration in the root [.env](.env) file:
+   - `MONGODB_URI`: Your MongoDB connection string
+   - `GEMINI_API_KEY`: Your Gemini API key
 3. Run the app:
    `npm run dev`
