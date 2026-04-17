@@ -60,6 +60,15 @@ export const CreateTicketPage: React.FC = () => {
     setPreviews(newPreviews);
   };
 
+  const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = error => reject(error);
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.title || !formData.description || !formData.location) {
@@ -71,10 +80,20 @@ export const CreateTicketPage: React.FC = () => {
     setError(null);
 
     try {
+      // Process images to attachments
+      const processedAttachments = await Promise.all(
+        images.map(async (file, index) => ({
+          id: `att-${Date.now()}-${index}`,
+          url: await fileToBase64(file),
+          fileName: file.name
+        }))
+      );
+
       const newTicket = await ticketService.createTicket({
         ...formData,
         createdBy: user?.id,
         createdByName: formData.name,
+        attachments: processedAttachments,
       });
       setSuccessData({
         id: newTicket.id,

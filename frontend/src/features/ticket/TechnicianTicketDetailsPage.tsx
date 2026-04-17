@@ -129,7 +129,7 @@ export const TechnicianTicketDetailsPage: React.FC = () => {
               <p className="text-lg leading-relaxed text-ink/70">{ticket.description}</p>
             </div>
 
-            {ticket.attachments.length > 0 && (
+            {ticket.attachments && Array.isArray(ticket.attachments) && ticket.attachments.length > 0 && (
               <div className="space-y-4 pt-8 border-t border-black/5">
                 <h3 className="text-sm font-bold uppercase tracking-widest text-ink/30 flex items-center gap-2">
                   <ImageIcon size={16} /> Attachments

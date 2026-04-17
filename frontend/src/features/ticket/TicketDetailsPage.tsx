@@ -180,11 +180,11 @@ export const TicketDetailsPage: React.FC = () => {
               <p className="text-lg leading-relaxed text-ink/80">{ticket.description}</p>
             </div>
 
-            {(ticket.attachments || []).length > 0 && (
+            {ticket.attachments && Array.isArray(ticket.attachments) && ticket.attachments.length > 0 && (
               <div className="space-y-4">
                 <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-ink/30">Attachments</h3>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
-                  {(ticket.attachments || []).map((att) => (
+                  {ticket.attachments.map((att) => (
                     <a 
                       key={att.id} 
                       href={att.url} 
