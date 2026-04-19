@@ -168,7 +168,7 @@ export const DashboardLayout: React.FC = () => {
 
       <div className="flex-1 flex flex-col min-h-screen overflow-hidden">
         {/* Top Navigation Bar */}
-        <header className="h-20 bg-paper/40 backdrop-blur-2xl border-b border-border flex items-center justify-between px-6 md:px-12 sticky top-0 z-50">
+        <header className="h-20 bg-paper/40 backdrop-blur-2xl border-b border-border/5 flex items-center justify-between px-6 md:px-12 sticky top-0 z-50">
           <div className="flex items-center gap-12">
             {!isAdminOrTech && (
               <div 
@@ -199,17 +199,7 @@ export const DashboardLayout: React.FC = () => {
           </div>
           
           <div className="flex items-center gap-6 md:gap-8">
-            <div className="relative hidden xl:block group">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-ink/30 group-focus-within:text-accent transition-colors duration-300" size={16} />
-              <input 
-                type="text" 
-                placeholder="Search anything..." 
-                className="pl-12 pr-6 py-2.5 bg-surface border border-transparent rounded-xl text-[13px] focus:ring-4 focus:ring-accent/5 focus:bg-card focus:border-border transition-all duration-300 w-64 outline-none font-medium"
-              />
-              <div className="absolute right-3 top-1/2 -translate-y-1/2 px-1.5 py-0.5 border border-border rounded bg-card text-[9px] font-bold text-ink/20 tracking-tighter shadow-sm">
-                ⌘K
-              </div>
-            </div>
+            {/* Search removed for minimalism */}
             
             <div className="flex items-center gap-4">
               <button

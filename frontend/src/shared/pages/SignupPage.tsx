@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
-import { Mail, Lock, User, UserPlus, ArrowRight, ShieldCheck, Command, ChevronRight, Globe } from 'lucide-react';
+import { Mail, Lock, User, UserPlus, ArrowRight, ShieldCheck, Command, ChevronRight, Globe, Eye, EyeOff } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { authService } from '../services/authService';
 import { cn } from '../../lib/utils';
@@ -26,6 +26,8 @@ export const SignupPage: React.FC = () => {
 
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
 
   const validate = () => {
@@ -177,7 +179,7 @@ export const SignupPage: React.FC = () => {
                 <select
                   value={formData.role}
                   onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                  className="w-full pl-16 pr-12 py-4.5 bg-white rounded-[2rem] focus:ring-4 focus:ring-accent/10 transition-all outline-none text-sm font-bold shadow-sm border border-transparent focus:border-border appearance-none cursor-pointer"
+                  className="w-full pl-16 pr-12 py-4.5 bg-card rounded-[2rem] focus:ring-4 focus:ring-accent/10 transition-all outline-none text-sm font-bold shadow-sm border border-transparent focus:border-border appearance-none cursor-pointer"
                 >
                   <option value="USER">Student Node</option>
                   <option value="TECHNICIAN">Technician Node</option>
@@ -192,12 +194,19 @@ export const SignupPage: React.FC = () => {
               <div className="relative group">
                 <Lock className="absolute left-6 top-1/2 -translate-y-1/2 text-ink/20 group-focus-within:text-accent transition-colors" size={20} />
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="w-full pl-16 pr-8 py-4.5 bg-white rounded-[2rem] focus:ring-4 focus:ring-accent/10 transition-all outline-none text-sm font-bold shadow-sm border border-transparent focus:border-border"
+                  className="w-full pl-16 pr-14 py-4.5 bg-card rounded-[2rem] focus:ring-4 focus:ring-accent/10 transition-all outline-none text-sm font-bold shadow-sm border border-transparent focus:border-border"
                   placeholder="••••••••••••"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-6 top-1/2 -translate-y-1/2 text-ink/20 hover:text-accent transition-colors focus:outline-none"
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
               </div>
             </div>
 
@@ -206,12 +215,19 @@ export const SignupPage: React.FC = () => {
               <div className="relative group">
                 <Lock className="absolute left-6 top-1/2 -translate-y-1/2 text-ink/20 group-focus-within:text-accent transition-colors" size={20} />
                 <input
-                  type="password"
+                  type={showConfirmPassword ? "text" : "password"}
                   value={formData.confirmPassword}
                   onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                  className="w-full pl-16 pr-8 py-4.5 bg-white rounded-[2rem] focus:ring-4 focus:ring-accent/10 transition-all outline-none text-sm font-bold shadow-sm border border-transparent focus:border-border"
+                  className="w-full pl-16 pr-14 py-4.5 bg-card rounded-[2rem] focus:ring-4 focus:ring-accent/10 transition-all outline-none text-sm font-bold shadow-sm border border-transparent focus:border-border"
                   placeholder="••••••••••••"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-6 top-1/2 -translate-y-1/2 text-ink/20 hover:text-accent transition-colors focus:outline-none"
+                >
+                  {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
               </div>
             </div>
 
@@ -219,7 +235,7 @@ export const SignupPage: React.FC = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full py-5 bg-ink text-white rounded-[2rem] font-black hover:bg-accent transition-all duration-500 shadow-2xl shadow-ink/10 disabled:opacity-50 flex items-center justify-center gap-4 text-[14px] uppercase tracking-[0.25em] group overflow-hidden relative active:scale-[0.98]"
+                className="w-full py-5 bg-accent text-white rounded-[2rem] font-black hover:bg-accent transition-all duration-500 shadow-2xl shadow-accent/10 disabled:opacity-50 flex items-center justify-center gap-4 text-[14px] uppercase tracking-[0.25em] group overflow-hidden relative active:scale-[0.98]"
               >
                 <span className="relative z-10">
                   {isLoading ? (
@@ -228,7 +244,7 @@ export const SignupPage: React.FC = () => {
                     <>Initialize Registry <ArrowRight size={20} className="inline-block group-hover:translate-x-1 transition-transform" /></>
                   )}
                 </span>
-                <div className="absolute inset-0 bg-accent translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+                <div className="absolute inset-0 bg-ink translate-y-full group-hover:translate-y-0 transition-transform duration-500 opacity-10" />
               </button>
             </div>
           </form>

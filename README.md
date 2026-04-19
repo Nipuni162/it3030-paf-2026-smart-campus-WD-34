@@ -1,22 +1,39 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# CampusHub Enterprise OS
 
-# Run and deploy your AI Studio app
+A sophisticated, unified campus orchestration platform.
 
-This contains everything you need to run your app locally.
+## 🚀 How to Run the Code
 
-View your app in AI Studio: https://ai.studio/apps/6f63c283-87d5-4af3-9fbc-5a4ffab88c18
+Follow these instructions to set up the Smart Campus Hub locally on your machine.
 
-## Run Locally
+### Prerequisites
 
-**Prerequisites:**  Node.js
+*   **Java 17 or higher** 
+*   **Node.js 20.x or higher**
+*   **Maven** (if not using the included wrapper)
+*   **MongoDB Atlas Account** (or a local MongoDB instance)
 
 
-1. Install dependencies:
-   `npm install`
-2. Set your configuration in the root [.env](.env) file:
-   - `MONGODB_URI`: Your MongoDB connection string
-   - `GEMINI_API_KEY`: Your Gemini API key
-3. Run the app:
-   `npm run dev`
+### Step 2: Launch the Backend
+
+The backend is built with Spring Boot. Navigate to the `backend` directory (if not already there) and run:
+
+```bash
+cd backend
+mvn spring-boot:run
+```
+The server will start on `http://localhost:8081`.
+
+---
+
+### Step 3: Launch the Frontend
+
+The frontend is built with React and Vite. Open a new terminal and run:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+---
+

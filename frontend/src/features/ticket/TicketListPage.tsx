@@ -67,7 +67,7 @@ export const TicketListPage: React.FC = () => {
               "px-8 py-4 rounded-2xl font-bold flex items-center gap-3 transition-all duration-300 border shadow-2xl shadow-ink/10",
               showOnlyMine 
                 ? "bg-accent text-white border-accent" 
-                : "bg-white text-ink border-black/5 hover:border-ink/20"
+                : "bg-card text-ink border-border hover:border-ink/20"
             )}
           >
             <TicketIcon size={20} /> My Tickets
@@ -92,7 +92,7 @@ export const TicketListPage: React.FC = () => {
                 "px-6 py-3 rounded-2xl text-[11px] font-bold uppercase tracking-[0.2em] transition-all duration-300 border",
                 filter === s 
                   ? "bg-accent text-white border-accent shadow-xl shadow-accent/20" 
-                  : "bg-white text-ink/40 border-black/5 hover:border-ink/20 hover:text-ink"
+                  : "bg-card text-ink/40 border-border hover:border-ink/20 hover:text-ink"
               )}
             >
               {s.replace('_', ' ')}
@@ -107,7 +107,7 @@ export const TicketListPage: React.FC = () => {
             placeholder="Search by ID or title..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-14 pr-6 py-4 bg-white border border-black/5 rounded-2xl focus:ring-4 focus:ring-accent/5 focus:border-accent transition-all outline-none text-sm font-medium"
+            className="w-full pl-14 pr-6 py-4 bg-card border border-border rounded-2xl focus:ring-4 focus:ring-accent/5 focus:border-accent transition-all outline-none text-sm font-medium"
           />
         </div>
       </div>
@@ -116,7 +116,7 @@ export const TicketListPage: React.FC = () => {
       {isLoading ? (
         <div className="grid grid-cols-1 gap-6">
           {[1, 2, 3].map(i => (
-            <div key={i} className="h-32 bg-white/50 animate-pulse rounded-[2.5rem] border border-black/5" />
+            <div key={i} className="h-32 bg-card/50 animate-pulse rounded-[2.5rem] border border-border" />
           ))}
         </div>
       ) : filteredTickets.length > 0 ? (
@@ -125,7 +125,7 @@ export const TicketListPage: React.FC = () => {
             <div 
               key={ticket.id}
               onClick={() => navigate(ticket.id)}
-              className="bg-white rounded-[2.5rem] border border-black/5 p-8 hover:shadow-2xl hover:shadow-black/5 transition-all duration-500 group cursor-pointer card-shadow flex flex-col md:flex-row md:items-center gap-8"
+              className="bg-card rounded-[2.5rem] border border-border p-8 hover:shadow-2xl hover:shadow-black/5 transition-all duration-500 group cursor-pointer card-shadow flex flex-col md:flex-row md:items-center gap-8"
             >
               <div className="flex-1">
                 <div className="flex items-center gap-4 mb-3">
@@ -169,8 +169,8 @@ export const TicketListPage: React.FC = () => {
           ))}
         </div>
       ) : (
-        <div className="p-20 bg-white/50 rounded-[3rem] border border-dashed border-black/10 text-center">
-          <div className="w-20 h-20 bg-white rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl shadow-black/5">
+        <div className="p-20 bg-card/50 rounded-[3rem] border border-dashed border-border text-center">
+          <div className="w-20 h-20 bg-card rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl shadow-black/5">
             <TicketIcon className="text-ink/10" size={40} />
           </div>
           <h3 className="text-2xl font-bold text-ink mb-2">No tickets found</h3>

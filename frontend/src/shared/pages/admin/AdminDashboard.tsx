@@ -118,7 +118,7 @@ export const AdminDashboard: React.FC = () => {
             <h3 className="text-xl font-bold mb-3 relative z-10">Quick Management</h3>
             <p className="text-white/50 text-sm mb-8 leading-relaxed relative z-10">Access administrative tools and system configurations.</p>
             <div className="space-y-4 relative z-10">
-              <button className="w-full py-4 bg-white text-ink font-bold rounded-2xl hover:bg-accent hover:text-white transition-all duration-300 flex items-center justify-center gap-3">
+              <button className="w-full py-4 bg-paper text-ink font-bold rounded-2xl hover:bg-accent hover:text-white transition-all duration-300 flex items-center justify-center gap-3">
                 Add Resource <ArrowUpRight size={18} />
               </button>
               <button className="w-full py-4 bg-white/10 text-white font-bold rounded-2xl hover:bg-white/20 transition-all duration-300 flex items-center justify-center gap-3">

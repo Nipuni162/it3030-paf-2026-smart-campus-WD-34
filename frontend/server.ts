@@ -19,7 +19,7 @@ async function checkDatabase() {
 async function startServer() {
   await checkDatabase();
   const app = express();
-  const PORT = 3000;
+  const PORT = Number(process.env.PORT) || 3000;
 
   app.use(express.json());
 
@@ -38,13 +38,13 @@ async function startServer() {
 
   // API Routes
   app.get("/api/resources", (req, res) => res.json(resources));
-  
+
   app.get("/api/bookings", (req, res) => res.json(bookings));
   app.post("/api/bookings", (req, res) => {
     const newBooking = { ...req.body, id: Date.now().toString(), status: "PENDING" };
     // Simple conflict check
-    const conflict = bookings.find(b => 
-      b.resourceId === newBooking.resourceId && 
+    const conflict = bookings.find(b =>
+      b.resourceId === newBooking.resourceId &&
       b.status === "APPROVED" &&
       ((new Date(newBooking.startTime) < new Date(b.endTime)) && (new Date(newBooking.endTime) > new Date(b.startTime)))
     );
@@ -77,8 +77,19 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, "0.0.0.0", () => {
+  const server = app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server running on http://localhost:${PORT}`);
+  });
+
+  server.on('error', (e: any) => {
+    if (e.code === 'EADDRINUSE') {
+      console.log(`\x1b[33m%s\x1b[0m`, `⚠️  Port ${PORT} is busy, trying ${Number(PORT) + 1}...`);
+      setTimeout(() => {
+        server.close();
+        process.env.PORT = (Number(PORT) + 1).toString();
+        startServer();
+      }, 100);
+    }
   });
 }
 

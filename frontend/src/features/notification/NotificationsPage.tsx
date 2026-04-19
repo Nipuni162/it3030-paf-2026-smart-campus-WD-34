@@ -98,7 +98,7 @@ export const NotificationsPage: React.FC = () => {
       <div className="h-px w-full bg-black/5" />
 
       {/* Notifications List */}
-      <div className="bg-white rounded-[3rem] border border-black/5 overflow-hidden card-shadow">
+      <div className="bg-card rounded-[3rem] border border-black/5 overflow-hidden card-shadow">
         {isLoading ? (
           <div className="p-20 space-y-8">
             {[1, 2, 3].map(i => (
@@ -112,7 +112,7 @@ export const NotificationsPage: React.FC = () => {
                 key={notification.id}
                 className={cn(
                   "p-8 flex items-start gap-8 transition-all duration-500 group relative",
-                  !notification.isRead ? "bg-accent/[0.02]" : "hover:bg-black/[0.01]"
+                  notification.isRead ? "bg-card border-border opacity-50" : "bg-card border-accent/20 shadow-xl shadow-accent/5 ring-1 ring-accent/10"
                 )}
               >
                 {!notification.isRead && (

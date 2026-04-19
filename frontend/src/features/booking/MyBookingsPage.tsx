@@ -128,14 +128,11 @@ export const MyBookingsPage: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {isLoading ? (
           [1, 2, 3, 4].map(i => (
-            <div key={i} className="h-64 bg-white rounded-[3rem] border border-black/5 animate-pulse" />
+            <div key={i} className="h-64 bg-card rounded-[3rem] border border-border animate-pulse" />
           ))
         ) : filteredBookings.length > 0 ? (
           filteredBookings.map((booking) => (
-            <div 
-              key={booking.id}
-              className="bg-white rounded-[3rem] border border-black/5 overflow-hidden card-shadow hover:shadow-2xl transition-all duration-700 group flex flex-col"
-            >
+            <div key={booking.id} className="bg-card rounded-[2.5rem] border border-border p-8 hover:shadow-2xl hover:shadow-black/5 transition-all duration-500 group relative overflow-hidden">
               <div className="p-10 flex-1">
                 <div className="flex items-start justify-between mb-8">
                   <div className="space-y-1">

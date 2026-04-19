@@ -106,7 +106,7 @@ export const TechnicianDashboard: React.FC = () => {
                 <div 
                   key={ticket.id}
                   onClick={() => navigate(`/technician/tickets/${ticket.id}`)}
-                  className="bg-white rounded-[2rem] border border-black/5 p-6 hover:shadow-2xl hover:shadow-black/5 transition-all duration-500 group cursor-pointer flex items-center gap-6"
+                  className="bg-card rounded-[2rem] border border-border p-6 hover:shadow-2xl hover:shadow-black/5 transition-all duration-500 group cursor-pointer flex items-center gap-6"
                 >
                   <div className="w-12 h-12 bg-paper rounded-2xl flex items-center justify-center text-ink/20 group-hover:bg-accent/10 group-hover:text-accent transition-all">
                     <Ticket size={20} />
@@ -132,7 +132,7 @@ export const TechnicianDashboard: React.FC = () => {
               ))}
             </div>
           ) : (
-            <div className="p-12 bg-white/50 rounded-[2.5rem] border border-dashed border-black/10 text-center">
+            <div className="p-12 bg-card/50 rounded-[2.5rem] border border-dashed border-border text-center">
               <p className="text-ink/40 serif-italic">No active tasks assigned to you.</p>
             </div>
           )}
@@ -156,7 +156,7 @@ export const TechnicianDashboard: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-[2.5rem] border border-black/5 p-10 card-shadow">
+          <div className="bg-card rounded-[2.5rem] border border-border p-10 card-shadow">
             <h3 className="text-xl font-bold mb-8 tracking-tight">Performance Metrics</h3>
             <div className="space-y-8">
               <MetricItem label="Avg. Resolution Time" value="4.2 hrs" />
@@ -192,7 +192,7 @@ function StatCard({ label, value, icon, trend, color }: { label: string, value: 
   };
   
   return (
-    <div className="bg-white p-8 rounded-[2.5rem] border border-black/5 shadow-sm hover:shadow-2xl hover:shadow-black/5 transition-all duration-500 group">
+    <div className="bg-card p-8 rounded-[2.5rem] border border-border shadow-sm hover:shadow-2xl hover:shadow-black/5 transition-all duration-500 group">
       <div className="flex items-center justify-between mb-8">
         <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center border transition-all duration-500 group-hover:scale-110 group-hover:rotate-6", colors[color as keyof typeof colors])}>
           {icon}

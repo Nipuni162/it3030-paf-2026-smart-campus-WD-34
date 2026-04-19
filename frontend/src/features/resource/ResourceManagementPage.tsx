@@ -158,7 +158,7 @@ export const ResourceManagementPage: React.FC = () => {
                 "px-6 py-3 rounded-2xl text-[11px] font-bold uppercase tracking-[0.2em] transition-all duration-300 border",
                 filter === s 
                   ? "bg-accent text-white border-accent shadow-xl shadow-accent/20" 
-                  : "bg-white text-ink/40 border-black/5 hover:border-ink/20 hover:text-ink"
+                  : "bg-card text-ink/40 border-border hover:border-ink/20 hover:text-ink"
               )}
             >
               {s.replace('_', ' ')}
@@ -173,16 +173,16 @@ export const ResourceManagementPage: React.FC = () => {
             placeholder="Search by ID or name..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-14 pr-6 py-4 bg-white border border-black/5 rounded-2xl focus:ring-4 focus:ring-accent/5 focus:border-accent transition-all outline-none text-sm font-medium"
+            className="w-full pl-14 pr-6 py-4 bg-card border border-border rounded-2xl focus:ring-4 focus:ring-accent/5 focus:border-accent transition-all outline-none text-sm font-medium"
           />
         </div>
       </div>
 
       {/* Resources Table */}
-      <div className="bg-white rounded-[3rem] border border-black/5 overflow-hidden card-shadow">
+      <div className="bg-card rounded-[3rem] border border-border overflow-hidden card-shadow">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="bg-black/[0.02] border-b border-black/5">
+            <tr className="bg-black/[0.02] border-b border-border">
               <th className="px-8 py-6 text-[10px] font-bold uppercase tracking-[0.2em] text-ink/30">Resource</th>
               <th className="px-8 py-6 text-[10px] font-bold uppercase tracking-[0.2em] text-ink/30">Type</th>
               <th className="px-8 py-6 text-[10px] font-bold uppercase tracking-[0.2em] text-ink/30">Faculty</th>
@@ -191,7 +191,7 @@ export const ResourceManagementPage: React.FC = () => {
               <th className="px-8 py-6 text-[10px] font-bold uppercase tracking-[0.2em] text-ink/30 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-black/5">
+          <tbody className="divide-y divide-border">
             {isLoading ? (
               <tr>
                 <td colSpan={6} className="px-8 py-20 text-center text-ink/40 serif-italic">Loading resources...</td>

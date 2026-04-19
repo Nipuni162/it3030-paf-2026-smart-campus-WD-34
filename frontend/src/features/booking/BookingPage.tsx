@@ -16,7 +16,6 @@ import {
 import { cn } from '../../lib/utils';
 import { bookingService, Resource, ResourceType } from './bookingService';
 import { useAuth } from '../../shared/context/AuthContext';
-import { OngoingBookingsChart } from './OngoingBookingsChart';
 import { toast } from 'sonner';
 
 export const BookingPage: React.FC = () => {
@@ -98,14 +97,14 @@ export const BookingPage: React.FC = () => {
               placeholder="Search resources..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-12 pr-6 py-4 bg-white border border-black/5 rounded-2xl focus:ring-4 focus:ring-accent/5 focus:border-accent transition-all outline-none text-sm font-medium w-64"
+              className="pl-12 pr-6 py-4 bg-card border border-border rounded-2xl focus:ring-4 focus:ring-accent/5 focus:border-accent transition-all outline-none text-sm font-medium w-64"
             />
           </div>
         </div>
       </div>
 
       {/* Filters Section */}
-      <div className="bg-white rounded-[2.5rem] border border-black/5 p-8 card-shadow space-y-8">
+      <div className="bg-card rounded-[2.5rem] border border-border p-8 card-shadow space-y-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Type Filter */}
           <div className="space-y-4">
@@ -170,7 +169,7 @@ export const BookingPage: React.FC = () => {
           {filteredResources.map((res) => (
             <div 
               key={res.id} 
-              className="bg-white rounded-[2.5rem] border border-black/5 p-8 hover:shadow-2xl hover:shadow-black/5 transition-all duration-500 group relative overflow-hidden card-shadow flex flex-col"
+              className="bg-card rounded-[2.5rem] border border-border p-8 hover:shadow-2xl hover:shadow-black/5 transition-all duration-500 group relative overflow-hidden card-shadow flex flex-col"
             >
               <div className="absolute top-0 right-0 p-8">
                 <span className={cn(
@@ -230,13 +229,10 @@ export const BookingPage: React.FC = () => {
         </div>
       )}
 
-      {/* Ongoing Sessions Timeline */}
-      <OngoingBookingsChart />
-
       {/* Booking Modal */}
       {showForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-ink/60 backdrop-blur-sm">
-          <div className="bg-white w-full max-w-xl rounded-[3rem] shadow-2xl p-12 border border-black/5 relative overflow-hidden">
+          <div className="bg-card w-full max-w-xl rounded-[3rem] shadow-2xl p-12 border border-border relative overflow-hidden">
             {bookingSuccess ? (
               <div className="py-12 text-center space-y-6">
                 <div className="w-20 h-20 bg-green-500 rounded-[2rem] flex items-center justify-center mx-auto shadow-2xl shadow-green-500/20 animate-bounce">
